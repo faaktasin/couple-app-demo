@@ -3,7 +3,7 @@
  * Network-first strategy: always fetches latest, falls back to cache offline.
  */
 
-var CACHE_NAME = 'littlebear-demo-v2';
+var CACHE_NAME = 'littlebear-demo-v3';
 var ASSETS = [
   './',
   './index.html',
