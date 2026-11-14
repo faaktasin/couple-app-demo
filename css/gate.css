@@ -1,0 +1,366 @@
+/**
+ * Ayıcık — Love-question gate overlay styling
+ * Renders inside the frozen #gate-overlay (base look — full-screen, gradient, safe-area padding —
+ * comes from .overlay in css/style.css). All classes are prefixed gate- to avoid collisions.
+ *
+ * Contrast note: --rose-strong measures under 4.5:1 against the blush end of the overlay's own
+ * gradient, so body-sized text here uses --ink (or --berry for the big script headings, which
+ * still clears 4.5:1 comfortably) instead — never --rose-strong as a foreground text colour.
+ */
+
+.gate-shell {
+  flex: 1;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  /* The stage content is deliberately centred (keeps the buttons in comfortable thumb reach on a
+     tall phone) rather than stretched edge to edge, which left the top/bottom margins reading as
+     plain empty gradient (2026-09-28 review: "sparse", not lush). The tiled heart texture that
+     fills that space now lives on its own full-bleed .gate-bg-pattern layer below, not on this
+     centred/padded box — this box sits inside #gate-overlay's own 20px side padding, so a
+     background-image painted here would stop dead ~20px short of each screen edge. */
+}
+
+/* Full-bleed tiled heart texture behind the gate's content, over the overlay's own blush
+   gradient. Deliberately its own element (not .gate-shell, which is inset by #gate-overlay's own
+   side padding — see the comment above): position:absolute + inset:0 on a fixed-position ancestor
+   sizes it to the OVERLAY's padding box, i.e. the full viewport, ignoring that padding entirely —
+   the earlier attempt painted this on .gate-shell instead and read as a hard vertical seam ~20px
+   in from each edge (2026-09-28 review). Two identical layers, the second offset by half a tile
+   in both axes, weave the hearts into staggered/offset rows (a brick pattern) rather than a rigid
+   grid. z-index:-1 keeps it a negative-stack child of #gate-overlay (a stacking context, being
+   position:fixed) — behind the overlay's own gradient background AND behind .gate-shell (a plain,
+   non-positioned in-flow child, always painted above negative-stack siblings) without touching
+   .gate-shell's own stacking. background-image is invisible to window.__app.readable()'s contrast
+   maths (it reads backgroundColor only), so this cannot affect the measured text-contrast checks.
+   Static, not animated, so it needs no reduced-motion guard. */
+.gate-bg-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath transform='translate(4 4) scale(1.5)' fill='%23F06A8F' opacity='0.16' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath transform='translate(4 4) scale(1.5)' fill='%23F06A8F' opacity='0.16' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+  background-repeat: repeat, repeat;
+  background-size: 44px 44px, 44px 44px;
+  background-position: 0 0, 22px 22px;
+}
+
+/* ── Skip control (top-right corner, every step but the finale) ──────────────
+   Low-key on purpose: soft ink text and a small chevron, no fill, no border. --ink-soft on the
+   blush end of the overlay gradient measures about 5.4:1. The 44x44 hit area is the button itself
+   (min size), so the small look never shrinks the target. Fixed, like the birthday close button,
+   so it stays put when a tall overlay scrolls. */
+.gate-skip {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 6px);
+  right: 8px;
+  z-index: 6; /* above the hopping No button (5) so a hop can never bury it */
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 10px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.gate-skip[hidden] {
+  display: none;
+}
+
+.gate-skip:focus-visible {
+  outline: 3px solid var(--rose-strong);
+  outline-offset: -4px;
+  border-radius: 12px;
+}
+
+.gate-skip-chevron {
+  display: block;
+}
+
+/* ── Progress hearts ─────────────────────────────────── */
+
+.gate-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.gate-progress-heart {
+  color: var(--rose-100);
+  display: inline-flex;
+}
+
+.gate-progress-heart.is-done,
+.gate-progress-heart.is-current {
+  color: var(--rose-strong);
+}
+
+.gate-progress-heart.is-current {
+  animation: gateProgressPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gateProgressPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+/* ── Stage (one step at a time) ──────────────────────── */
+
+.gate-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gate-bear-slot {
+  filter: drop-shadow(0 8px 18px var(--shadow));
+  margin-bottom: 4px;
+}
+
+.gate-bear-slot svg {
+  display: block;
+}
+
+/* ── Question step ───────────────────────────────────── */
+
+.gate-question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gate-question-text {
+  font-family: var(--font-script);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  line-height: 1.35;
+  color: var(--berry);
+  text-align: center;
+  margin: 14px 0 26px;
+  padding: 0 8px;
+}
+
+.gate-btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.gate-btn {
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 700;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: font-size .22s ease, padding .22s ease, height .22s ease,
+    left .35s ease, top .35s ease, background .2s ease, transform .1s ease;
+  /* Covers Yes, the hopping No and '+ daha çok' (all carry this base class): a long press on a
+     fast-moving/repeatedly-tapped target must not raise iOS's callout menu, select its text, or
+     let a rapid double-tap zoom the page. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.gate-btn:active {
+  transform: scale(0.96);
+}
+
+.gate-btn-yes {
+  font-size: 1.0625rem; /* 17px, matches YES_BASE_FONT in gate.js */
+  padding: 14px 28px;
+  background: var(--rose-strong);
+  color: var(--paper);
+  box-shadow: 0 6px 18px var(--shadow);
+  /* The real cap is the row: a flex item with overflow:hidden gets an automatic min-width of 0,
+     so default flex-shrink already keeps this inside the row's width (the overlay's own side
+     padding leaves comfortable room under viewport-32px) however large font-size/padding grow.
+     max-width:100% only documents that contract for a reader — it never becomes the binding
+     constraint here, and a bare calc(100vw - 32px) would be provably *wider* than this padded
+     row's 100%, so it would never bind either — never wider than the flex row it lives in. */
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.gate-btn-yes:hover {
+  background: var(--berry);
+}
+
+.gate-btn-no {
+  font-size: 1rem;
+  height: 56px; /* matches NO_BASE_HEIGHT in gate.js */
+  line-height: 56px;
+  padding: 0 22px;
+  min-height: 24px; /* the real floor — gate.js computes height unclamped and lets this win */
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1.5px solid var(--rose-100);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gate-reply {
+  margin-top: 18px;
+  min-height: 1.4em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink);
+  text-align: center;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+/* ── Love meter step ─────────────────────────────────── */
+
+.gate-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gate-meter-heart {
+  position: relative;
+  width: 130px;
+  height: 160px;
+  margin: 8px 0 16px;
+  cursor: pointer;
+  touch-action: none; /* dragging must not scroll the overlay */
+  filter: drop-shadow(0 6px 14px var(--shadow));
+}
+
+.gate-meter-heart:focus-visible {
+  outline: 3px solid var(--rose-strong);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.gate-meter-heart-bg,
+.gate-meter-heart-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* the wrapping .gate-meter-heart owns every pointer/keyboard event */
+}
+
+.gate-meter-heart-fill {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path .2s ease;
+}
+
+.gate-meter-label {
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 18px;
+  min-height: 1.3em;
+}
+
+.gate-meter-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.gate-btn-more {
+  font-size: 0.9rem;
+  padding: 10px 22px;
+  background: var(--paper);
+  color: var(--rose-strong);
+  border: 1.5px solid var(--rose-100);
+}
+
+.gate-btn-more:hover {
+  background: var(--blush);
+}
+
+.gate-meter-actions .gate-btn-yes {
+  font-size: 1.0625rem;
+  padding: 13px 26px;
+}
+
+.gate-meter-actions .gate-btn-yes:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Finale step ─────────────────────────────────────── */
+
+.gate-finale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.gate-hug-slot {
+  filter: drop-shadow(0 10px 22px var(--shadow));
+  margin-bottom: 8px;
+}
+
+.gate-finale-title {
+  font-family: var(--font-script);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 7vw, 2.3rem);
+  color: var(--berry);
+  margin-bottom: 10px;
+}
+
+.gate-finale-text {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 320px;
+  margin-bottom: 26px;
+}
+
+.gate-finale-btn {
+  font-size: 1.05rem;
+  padding: 15px 32px;
+}
+
+/* ── Reduced motion ──────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-progress-heart.is-current {
+    animation: none;
+  }
+  .gate-btn,
+  .gate-meter-heart-fill {
+    transition: none;
+  }
+}

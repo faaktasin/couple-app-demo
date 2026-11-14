@@ -1,0 +1,1022 @@
+/**
+ * Ayıcık - Takip (habit tracker) styling
+ * Prefix: hb-. Reuses tokens and the .card / .modal shells from css/style.css. The day sheet is
+ * the shared .modal-overlay (z-index 2000 in the ladder at the top of style.css), so nothing here
+ * sets a z-index of its own.
+ *
+ * Three person colours, picked in the app's rose world and run through the dataviz palette
+ * validator (light surface): lightness band, chroma floor, colour-blind separation (worst
+ * adjacent pair 11.8 on the deutan simulation) and normal-vision separation all PASS.
+ *   Elif  #C93A6E  rose-strong, 4.80:1 on the paper ground
+ *   Can  #0A8CB5  sea blue,    3.81:1
+ *   Birlikte #A86B00 amber,       4.34:1
+ * Colours only ever mark a shape (a heart, a ring, a dot) that also sits beside the person's name;
+ * text stays in the ink tokens, on the light tints (ink on any tint is above 10:1).
+ */
+
+:root {
+  --hb-elif: #C93A6E;
+  --hb-elif-tint: #FFE3EA;
+  --hb-can: #0A8CB5;
+  --hb-can-tint: #DDF1F8;
+  --hb-together: #A86B00;
+  --hb-together-tint: #FBEBCB;
+  --hb-track: #EADFE3;
+}
+
+.hb-p-elif { --hb-c: var(--hb-elif); --hb-t: var(--hb-elif-tint); }
+.hb-p-can { --hb-c: var(--hb-can); --hb-t: var(--hb-can-tint); }
+
+.hb-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hb-wrap > div:empty {
+  display: none;
+}
+
+/* The raised Sürpriz bubble stands about 30 px above the bar: the last card clears it by 16+. */
+#habits-view {
+  padding-bottom: calc(var(--nav-h) + 24px);
+}
+
+/* The stat, daily and bar cards share one container: they get the page's 16 px between cards. */
+#hb-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* A name and its percentage never break apart across lines. */
+.hb-nw {
+  white-space: nowrap;
+}
+
+.hb-title {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--rose-strong);
+  line-height: 1.1;
+}
+
+.hb-hint {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* ── Who am I ───────────────────────────────────────── */
+
+.hb-me {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.hb-me-name {
+  color: var(--ink);
+}
+
+.hb-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+  background: none;
+  padding: 0 8px;
+  font-size: inherit;
+  color: var(--rose-strong);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.hb-choose {
+  text-align: center;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, var(--paper), var(--blush));
+}
+
+.hb-choose-bear {
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 6px 14px var(--shadow));
+}
+
+.hb-choose-title {
+  font-family: var(--font-script);
+  font-size: 2.1rem;
+  color: var(--rose-strong);
+  margin-top: 6px;
+}
+
+.hb-choose-sub {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 6px 0 18px;
+}
+
+.hb-choose-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hb-choose-btn {
+  min-height: 64px;
+  border-radius: var(--radius);
+  border: 2px solid var(--hb-c);
+  background: var(--hb-t);
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.hb-choose-btn:active {
+  transform: scale(0.96);
+}
+
+.hb-choose .hb-link {
+  margin-top: 14px;
+}
+
+/* ── Today's panel and the rows (shared with the day sheet) ─ */
+
+.hb-today {
+  padding: 18px 16px 12px;
+}
+
+.hb-today-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.hb-today-date {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.hb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px 10px 12px;
+  border-radius: var(--radius-sm);
+  border-left: 5px solid var(--hb-rowc, var(--rose-100));
+  background: var(--hb-rowt, var(--cream));
+}
+
+.hb-g-together { --hb-rowc: var(--hb-together); --hb-rowt: var(--hb-together-tint); }
+.hb-g-elif { --hb-rowc: var(--hb-elif); --hb-rowt: var(--hb-elif-tint); }
+.hb-g-can { --hb-rowc: var(--hb-can); --hb-rowt: var(--hb-can-tint); }
+
+.hb-row-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.hb-boxes {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.hb-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+}
+
+.hb-box-name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* The heart button: an outlined heart in the person's colour; ticked = filled with a check. */
+.hb-heart {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--hb-c);
+  background: var(--paper);
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.hb-heart:active {
+  transform: scale(0.92);
+}
+
+.hb-heart-svg {
+  width: 30px;
+  height: 30px;
+}
+
+.hb-heart-shape {
+  fill: none;
+  stroke: var(--hb-c);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  transition: fill 0.2s;
+}
+
+.hb-heart-check {
+  fill: none;
+  stroke: var(--hb-c);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.hb-heart.is-on {
+  background: var(--hb-c);
+}
+
+.hb-heart.is-on .hb-heart-shape {
+  fill: var(--paper);
+  stroke: var(--paper);
+}
+
+.hb-heart.is-on .hb-heart-check {
+  opacity: 1;
+}
+
+/* Locked: the partner's box. Still shows whether it is ticked, but dashed, flat and with a lock. */
+.hb-heart.is-locked {
+  border-style: dashed;
+  cursor: default;
+  background: var(--hb-t);
+}
+
+.hb-heart.is-locked:active {
+  transform: none;
+}
+
+/* A ticked partner box must not read as your own tick: the disc stays on the pale tint, and only
+   the heart inside is filled with the person's colour (the check stays white on it). Your own
+   ticked box is a solid disc with a white heart. */
+.hb-heart.is-locked.is-on {
+  background: var(--hb-t);
+  border-style: dashed;
+}
+
+.hb-heart.is-locked.is-on .hb-heart-shape {
+  fill: var(--hb-c);
+  stroke: var(--hb-c);
+}
+
+.hb-heart.is-locked.is-on .hb-heart-check {
+  stroke: var(--paper);
+}
+
+.hb-lock {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--rose-100);
+  fill: var(--ink-soft);
+}
+
+.hb-heart:focus-visible,
+.hb-day:focus-visible,
+.hb-nav-btn:focus-visible,
+.hb-choose-btn:focus-visible,
+.hb-link:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* The joint heart between the two boxes of a shared item: lit only when both ticked. */
+.hb-joint {
+  align-self: flex-start;
+  margin-top: 12px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+}
+
+.hb-joint svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--paper);
+  stroke: var(--hb-together);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  transition: fill 0.25s, transform 0.25s;
+}
+
+.hb-joint.is-on svg {
+  fill: var(--hb-together);
+  transform: scale(1.12);
+}
+
+/* ── Month page ─────────────────────────────────────── */
+
+.hb-month {
+  padding: 16px 10px 14px;
+}
+
+.hb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hb-nav-title {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--rose-strong);
+  text-align: center;
+  flex: 1;
+}
+
+.hb-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--rose-100);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hb-nav-btn:disabled {
+  color: var(--ink-soft);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.hb-cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.hb-dow {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  padding-bottom: 2px;
+}
+
+.hb-day {
+  position: relative;
+  min-height: 54px;
+  border-radius: 10px;
+  border: 1px solid var(--rose-100);
+  background: var(--paper);
+  padding: 4px 2px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ink);
+  font-family: var(--font-num);
+  cursor: pointer;
+}
+
+.hb-day.is-blank {
+  border: none;
+  background: none;
+  cursor: default;
+}
+
+/* A day that has not come yet: lighter ground, no border, no rings, not a button. */
+.hb-day.is-future {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.hb-day.is-today {
+  border: 2px solid var(--rose-strong);
+  background: var(--blush);
+}
+
+.hb-day-n {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.hb-day-heart {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 11px;
+  height: 11px;
+  fill: var(--hb-together);
+}
+
+.hb-rings {
+  display: flex;
+  gap: 2px;
+}
+
+.hb-ring {
+  width: 16px;
+  height: 16px;
+}
+
+.hb-ring-track {
+  fill: none;
+  stroke: var(--hb-track);
+  stroke-width: 3;
+}
+
+.hb-ring-fill {
+  fill: none;
+  stroke: var(--hb-c);
+  stroke-width: 3;
+}
+
+.hb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.hb-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hb-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3px solid var(--hb-c);
+}
+
+.hb-leg-joint svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--hb-together);
+}
+
+.hb-soon {
+  text-align: center;
+}
+
+.hb-soon-bear {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+/* ── Day sheet ──────────────────────────────────────── */
+
+#habits-day-title {
+  font-size: 1.4rem;
+}
+
+/* The title and the close button stay in view while the rows scroll: the header sticks to the top
+   of the scrolling .modal (its 24 px padding is pulled in with negative margins). */
+#habits-day-modal .modal-header {
+  position: sticky;
+  top: -24px; /* sticky offsets count from inside the scroller's padding: -24 puts it at the very top */
+  z-index: 1;
+  margin: -24px -24px 8px;
+  padding: 24px 24px 12px;
+  background: var(--paper);
+}
+
+/* The close button is 44x44 to touch; the glyph sits exactly where it did (negative margins). */
+#habits-day-modal .modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -10px -14px -10px 0;
+}
+
+.hb-sheet-group + .hb-sheet-group {
+  margin-top: 14px;
+}
+
+.hb-group-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.hb-row--sheet + .hb-row--sheet {
+  margin-top: 8px;
+}
+
+/* ── Stage 4: stat cards, charts, report card, log ──── */
+
+.hb-p-together { --hb-c: var(--hb-together); --hb-t: var(--hb-together-tint); }
+
+.hb-stats,
+.hb-daily,
+.hb-bars,
+.hb-mom,
+.hb-log {
+  padding: 16px 14px 14px;
+}
+
+.hb-lead {
+  font-family: var(--font-num);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.hb-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hb-stat {
+  background: var(--hb-t);
+  border-radius: var(--radius-sm);
+  border-top: 4px solid var(--hb-c);
+  padding: 10px 4px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hb-stat-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.hb-stat-name .hb-dot {
+  flex-shrink: 0;
+}
+
+.hb-stat-heart {
+  width: 14px;
+  height: 14px;
+  fill: var(--hb-together);
+  flex-shrink: 0;
+}
+
+.hb-stat-num {
+  font-family: var(--font-num);
+  font-size: 1.85rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.hb-stat-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 2.5em;
+  text-wrap: balance;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+/* .hb-stat-sub is a flex column: the number and the label are two items, two lines. */
+.hb-streak-n,
+.hb-streak-label {
+  white-space: nowrap;
+}
+
+.hb-streak-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.hb-hint--center {
+  text-align: center;
+  margin-top: 4px;
+}
+
+.hb-daily .hb-title,
+.hb-bars .hb-title,
+.hb-mom .hb-title,
+.hb-log .hb-title {
+  margin-bottom: 8px;
+}
+
+.hb-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink-soft);
+}
+
+.hb-grid {
+  stroke: var(--hb-track);
+  stroke-width: 1;
+}
+
+.hb-axis,
+.hb-mlabel,
+.hb-myear {
+  fill: currentColor;
+  font-size: 9px;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.hb-myear {
+  font-size: 7.5px;
+}
+
+.hb-mval {
+  color: var(--ink);
+  fill: currentColor;
+  font-size: 8px;
+  font-family: var(--font-num);
+  font-weight: 600;
+}
+
+.hb-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.hb-line-elif,
+.hb-pt-elif { stroke: var(--hb-elif); fill: var(--hb-elif); }
+.hb-line-can,
+.hb-pt-can { stroke: var(--hb-can); fill: var(--hb-can); }
+.hb-line-elif,
+.hb-line-can { fill: none; }
+.hb-line-can { stroke-dasharray: 5 3; }
+
+.hb-pt {
+  stroke: var(--paper);
+  stroke-width: 1;
+}
+
+.hb-line-sample {
+  stroke-width: 2;
+  fill: none;
+}
+
+.hb-legend--chart svg {
+  width: 24px;
+  height: 11px;
+}
+
+/* The Birlikte heart is a mark like the dots, not a line sample: it must not inherit the 24 px
+   width above, or the gap before its label grows. */
+.hb-legend--chart .hb-stat-heart {
+  width: 12px;
+  height: 12px;
+}
+
+.hb-mbar { fill: var(--hb-c); }
+
+.hb-mom-scroll {
+  overflow-x: visible;
+}
+
+.hb-mom-scroll.is-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  /* An edge cue where more months are hidden: a soft shadow on each side that is scrolled away
+     from, gone again at the end of the strip (the "local" covers hide it there). */
+  background:
+    linear-gradient(to right, var(--paper) 30%, rgba(255, 253, 251, 0)) left center / 28px 100% no-repeat local,
+    linear-gradient(to left, var(--paper) 30%, rgba(255, 253, 251, 0)) right center / 28px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgba(74, 44, 54, 0.28), rgba(74, 44, 54, 0)) left center / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(74, 44, 54, 0.28), rgba(74, 44, 54, 0)) right center / 12px 100% no-repeat scroll;
+}
+
+.hb-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hb-bar-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.hb-bar-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.hb-bar-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hb-bar-who .hb-dot {
+  flex-shrink: 0;
+}
+
+.hb-bar-track {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--hb-track);
+  overflow: hidden;
+}
+
+.hb-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--hb-c);
+  transition: width 0.4s ease;
+}
+
+.hb-bar-val {
+  font-family: var(--font-num);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* Report card */
+
+.hb-report {
+  padding: 18px 16px 16px;
+  text-align: center;
+  background: var(--paper);
+  border: 2px solid var(--rose-100);
+}
+
+.hb-report-top {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.hb-report-bear {
+  filter: drop-shadow(0 6px 12px var(--shadow));
+}
+
+.hb-rh {
+  position: absolute;
+  fill: var(--rose);
+}
+
+.hb-rh--1 { width: 18px; height: 18px; top: 4px; left: 22%; }
+.hb-rh--2 { width: 13px; height: 13px; top: 30px; left: 14%; fill: var(--hb-together); }
+.hb-rh--3 { width: 16px; height: 16px; top: 10px; right: 20%; fill: var(--rose-strong); }
+
+.hb-report-title {
+  margin: 6px 0 10px;
+  font-size: 1.9rem;
+}
+
+.hb-report-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.hb-report-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--paper);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.hb-ri {
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  fill: var(--rose-strong);
+}
+
+.hb-report-close {
+  font-family: var(--font-script);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--berry);
+}
+
+.hb-teaser {
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.hb-teaser-text {
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--rose-strong);
+}
+
+/* Log */
+
+.hb-log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hb-log-row {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--rose-100);
+  font-size: 0.85rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* Line 1: who and what (it may wrap on a narrow phone, with no separator at a line end).
+   Line 2: the time and, while the server has not answered, the pill. Both sit on one 20 px line. */
+.hb-log-main {
+  display: flex;
+  align-items: baseline;
+  column-gap: 2px;
+}
+
+/* The name and the separator never wrap; a long item wraps inside its own box beside them, so a
+   "·" can never be left at the end of a line. */
+.hb-log-who,
+.hb-log-sep {
+  flex-shrink: 0;
+}
+
+.hb-log-what {
+  min-width: 0;
+}
+
+.hb-log-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-left: 17px;
+  line-height: 20px;
+}
+
+.hb-log-row:last-child {
+  border-bottom: none;
+}
+
+.hb-log-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+}
+
+.hb-log-who .hb-dot {
+  align-self: center;
+}
+
+.hb-log-sep {
+  color: var(--ink-soft);
+  white-space: pre;
+}
+
+.hb-log-when {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.hb-log-pending {
+  padding: 0 8px;
+  line-height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--hb-together-tint);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.hb-log-toggle {
+  display: block;
+  margin: 6px auto 0;
+  min-height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-bar-fill {
+    transition: none;
+  }
+}
+
+/* ── Narrow phones ──────────────────────────────────── */
+
+/* Seven day cells at gap 6 need 344 px of grid to stay 44 px wide (a thumb-sized target): up to
+   400 px wide the month card gives up its side padding (390 - 2 * 16 - 2 * 2 - 2 = 352 px). */
+@media (max-width: 400px) {
+  .hb-month {
+    padding: 14px 2px 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .hb-stats-grid {
+    gap: 6px;
+  }
+
+  .hb-stat-num {
+    font-size: 1.6rem;
+  }
+
+  .hb-bar-row {
+    grid-template-columns: 68px minmax(0, 1fr) 40px;
+    gap: 6px;
+  }
+
+  .hb-wrap {
+    padding: 12px 5px;
+  }
+
+  /* 360 px: the month card's side padding is set in the 400 px block above; the page gives up
+     some too: 360 - 2 * 5 - 2 * 2 - 2 (card border) = 344 px of grid. */
+  .hb-row-label {
+    font-size: 0.88rem;
+  }
+}
