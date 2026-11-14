@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Kawaii Bears — "Pofuduk Peluş — Bebek Yüzlü, Yumuşak" (soft baby-faced plush)
+ * Little Bear — Kawaii Bears — "Fluffy Plush — Baby-Faced, Soft" (soft baby-faced plush)
  * Drop-in for js/bears.js: same public API (bearSVG, hugSVG, bearAutoRender), same class hooks.
  * Built on the baby-faced plush the owner picked, then softened:
  *   - lighter, thinner warm-brown outline (never black) and deep-warm-brown eyes/mouth/nose

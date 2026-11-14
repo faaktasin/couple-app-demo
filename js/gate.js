@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Love-question gate overlay
+ * Little Bear — Love-question gate overlay
  * The "beni ne kadar seviyorsun" playthrough: a growing-Yes/shrinking-No question, a few playful
  * follow-ups, a love meter, and a hugging finale. Renders into the frozen #gate-overlay shell.
  *
@@ -7,14 +7,14 @@
  *   window.isGateDue()       true during her birthday week (her birthday + 6 days) while this year's play is unplayed
  *   window.startGateIfDue()  opens the automatic birthday sequence when isGateDue()
  *   window.replayGate()      opens the shorter replay sequence any time
- * A quiet "Geç ›" control (top corner, every step but the finale) ends the playthrough early and marks the
+ * A quiet "Skip ›" control (top corner, every step but the finale) ends the playthrough early and marks the
  * year played, exactly as the finale does, without opening the surprise.
  * #gate-replay-btn (header) un-hides once the gate has ever been completed and replays it.
  */
 (function () {
   'use strict';
 
-  var GATE_FLAG_KEY = 'ayicik-gate-played-year';
+  var GATE_FLAG_KEY = 'littlebear-gate-played-year';
   var GATE_WEEK_DAYS = 7; /* the gate opens by itself from her birthday for this many days (birthday day + 6) */
 
   var BEAR_SIZE = 128;
@@ -32,9 +32,9 @@
 
   /* Chrome labels CONTENT has no slot for — plain UI chrome, not romantic/message text. Listed
      in this package's report for the owner to fold into CONTENT if he wants them there instead. */
-  var GATE_MORE_LABEL = '+ daha çok';
-  var GATE_METER_ARIA_LABEL = 'Sevgi göstergesi';
-  var GATE_OVERLAY_ARIA_LABEL = 'Sevgi soruları';
+  var GATE_MORE_LABEL = '+ more';
+  var GATE_METER_ARIA_LABEL = 'Love meter';
+  var GATE_OVERLAY_ARIA_LABEL = 'Love questions';
 
   var GATE_HEART_PATH_D = 'M0 8 C-10 -4 -26 4 -26 18 C-26 34 0 52 0 52 C0 52 26 34 26 18 C26 4 10 -4 0 8 Z';
   var GATE_HEART_SVG_BG = '<svg class="gate-meter-heart-bg" viewBox="-30 -6 60 62" aria-hidden="true">' +
@@ -54,7 +54,7 @@
   /* ── Public contract ─────────────────────────────────── */
 
   /** Inside her birthday week only: after the last day the gate never opens by itself (the header
-   *  bear's replay button still plays it any time). isBirthdayUnlocked() is left alone — the Sürpriz
+   *  bear's replay button still plays it any time). isBirthdayUnlocked() is left alone — the Surprise
    *  tab keeps using it. */
   function isGateDue() {
     if (!isBirthdayUnlocked()) return false;

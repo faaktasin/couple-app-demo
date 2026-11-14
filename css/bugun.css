@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Bugün (Today) view styling
+ * Little Bear — Today (Today) view styling
  * Owned by the Today feature package. `bgn-` prefixes every class this package's own markup
  * introduces (js/daily.js). Frozen elements from index.html / css/style.css — .message-card,
  * .todo-card, .checkmark, #daily-message, #todo-list — are restyled here with extra rules scoped

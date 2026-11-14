@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Tarihler (Dates) view styling
+ * Little Bear — Dates (Dates) view styling
  * Builds on the shared .card / .countdown-* foundation already defined in css/style.css (the
  * countdown number grid, the celebration text style); this file adds only what that foundation
  * doesn't cover — bear placement, the gift-themed birthday card, the "today" states, and the
@@ -47,7 +47,7 @@
 }
 
 /* His birthday card: the blue twin of the gift card above — same gradient ground and layout, in
-   Can's blue (the Takip tab's --hb-can family) and with no gift corner. The numbers and the
+   Can's blue (the Habits tab's --hb-can family) and with no gift corner. The numbers and the
    today line use the deeper blue: the plain #0A8CB5 only reaches 3.3:1 on the tint. */
 .dts-card-his {
   --dts-blue: #0A8CB5;

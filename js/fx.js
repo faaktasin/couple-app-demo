@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Motion & Delight Effects
+ * Little Bear — Motion & Delight Effects
  * Self-written canvas confetti, a quick heart burst, a typewriter, and the background floating
  * hearts layer (#fx-hearts). Every effect is a no-op or an instant/static equivalent under
  * prefers-reduced-motion, per the app's animation rule.

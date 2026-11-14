@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Sözler (Words) feature
+ * Little Bear — Words (Words) feature
  * Renders three lovely sections into #words-root:
  *   1) a swipeable deck mixing CONTENT.words.quotes and CONTENT.words.lines, with favourites
  *   2) a jar of CONTENT.words.reasons drawn without replacement
@@ -13,15 +13,15 @@
   'use strict';
 
   /* ── Storage keys (single source, so a mutation test can anchor on the literal) ─────── */
-  var FAV_KEY = 'ayicik-fav-quotes';
-  var JAR_KEY = 'ayicik-jar-drawn';
-  var LETTERS_KEY = 'ayicik-letters-opened';
+  var FAV_KEY = 'littlebear-fav-quotes';
+  var JAR_KEY = 'littlebear-jar-drawn';
+  var LETTERS_KEY = 'littlebear-letters-opened';
 
   /* Fallback text, used only if CONTENT.words.ui is ever missing a key — CONTENT.words.ui
      (favEmpty / jarHint / jarReshuffled) is the source of truth these three shadow. */
-  var DEFAULT_FAV_EMPTY = 'Henüz favori sözün yok. Kalbe dokun, favorilere ekle 💗';
-  var DEFAULT_JAR_HINT = 'Kavanoza dokun, sana bir not çıksın 💌';
-  var DEFAULT_JAR_RESHUFFLED = 'Hepsini okudun! Kavanoz yeniden karışıyor 🔄';
+  var DEFAULT_FAV_EMPTY = 'You have no favorite quotes yet. Tap the heart to add one 💗';
+  var DEFAULT_JAR_HINT = 'Tap the jar and a little note will pop out 💌';
+  var DEFAULT_JAR_RESHUFFLED = 'You read them all! The jar is shuffling again 🔄';
 
   /* A cute jar illustration — our own inline SVG, no external art. Draw order: cap, lid, a ribbon
      bow sitting on the cap, the glass body, five folded love-notes tucked inside (fuller than a
@@ -64,7 +64,7 @@
 
   /* ── Small storage helpers (JSON list over time.js's storageGet/storageSet) ─────────── */
 
-  /* Preview-mode shadow: while a birthday rehearsal is live (?onizleme=dogumgunu), reads/writes
+  /* Preview-mode shadow: while a birthday rehearsal is live (?preview=birthday), reads/writes
      to this package's three keys never touch real localStorage — the same guarantee
      TIME_PREVIEW_PROTECTED_KEYS gives the gate/birthday flags, reproduced here because js/time.js
      is frozen for this package and its protected-keys list does not know these three keys. Each
@@ -172,7 +172,7 @@
 
     var isFav = favorites.indexOf(item.id) !== -1;
     favBtn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
-    favBtn.setAttribute('aria-label', isFav ? 'Favorilerden çıkar' : 'Favorilere ekle');
+    favBtn.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Add to favorites');
     favBtn.className = 'wz-fav-btn' + (isFav ? ' wz-fav-btn--active' : '');
 
     posEl.textContent = (deckIndex + 1) + ' / ' + list.length;
@@ -306,7 +306,7 @@
     var btn = document.querySelector('.wz-envelope[data-letter-id="' + id + '"]');
     if (!btn) return;
     var statusEl = btn.querySelector('.wz-envelope-status');
-    if (statusEl) statusEl.textContent = 'okundu ✓';
+    if (statusEl) statusEl.textContent = 'read ✓';
     if (btn.className.indexOf('wz-envelope--opened') === -1) {
       btn.className += ' wz-envelope--opened';
     }
@@ -326,7 +326,7 @@
     el.innerHTML =
       '<div class="wz-letter-backdrop" id="wz-letter-backdrop"></div>' +
       '<div class="wz-letter-sheet">' +
-        '<button type="button" class="wz-letter-close" id="wz-letter-close" aria-label="Kapat">' +
+        '<button type="button" class="wz-letter-close" id="wz-letter-close" aria-label="Close">' +
           '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">' +
           '<path fill="currentColor" d="M18.3 5.71L12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.71 2.89 18.3 9.17 12 2.89 5.71 4.3 4.29l6.29 6.3 6.3-6.3z"/>' +
           '</svg>' +
@@ -425,7 +425,7 @@
         btn.type = 'button';
         btn.className = 'wz-envelope' + (locked ? ' wz-envelope--locked' : '') + (opened ? ' wz-envelope--opened' : '');
         btn.setAttribute('data-letter-id', letter.id);
-        btn.setAttribute('aria-label', letter.title + (locked ? ' zarfı kilitli' : ' zarfını aç'));
+        btn.setAttribute('aria-label', letter.title + (locked ? ' (locked envelope)' : ' (open the envelope)'));
 
         var emojiSpan = document.createElement('span');
         emojiSpan.className = 'wz-envelope-emoji';
@@ -440,7 +440,7 @@
 
         var statusSpan = document.createElement('span');
         statusSpan.className = 'wz-envelope-status';
-        statusSpan.textContent = locked ? 'Kilitli' : (opened ? 'okundu ✓' : '');
+        statusSpan.textContent = locked ? 'Locked' : (opened ? 'read ✓' : '');
         btn.appendChild(statusSpan);
 
         btn.addEventListener('click', function () {
@@ -449,7 +449,7 @@
             var tease = teases[Math.floor(Math.random() * teases.length)];
             var cd = getNextBirthdayCountdown(CONFIG.herBirthday.month, CONFIG.herBirthday.day);
             var days = cd.days + ((cd.hours > 0 || cd.minutes > 0 || cd.seconds > 0) ? 1 : 0);
-            tease = tease.replace('{days}', String(days));
+            tease = tease.replace('{days|day|days}', days === 1 ? 'day' : 'days').replace('{days}', String(days));
             if (typeof window.showToast === 'function') window.showToast(tease);
             return;
           }
@@ -466,7 +466,7 @@
      birthdayOnly ("bday") envelope unlocks immediately instead of staying stuck showing the
      locked tease until the next reload. Registered once at module load (not inside initWords,
      which re-runs and would stack duplicate listeners). */
-  document.addEventListener('ayicik:birthday-unlocked', renderLettersGrid);
+  document.addEventListener('littlebear:birthday-unlocked', renderLettersGrid);
 
   /* ── Init ────────────────────────────────────────────────────────────────────────────── */
 
@@ -474,17 +474,17 @@
     '<div class="wz-wrap">' +
       '<section class="wz-section wz-quotes card">' +
         '<div class="wz-section-head">' +
-          '<p class="wz-section-title">Güzel Sözler</p>' +
+          '<p class="wz-section-title">Sweet Words</p>' +
           '<button type="button" class="wz-fav-toggle" id="wz-fav-toggle" aria-pressed="false">' +
             '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
             '<path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>' +
             '</svg>' +
-            '<span>Favorilerim</span>' +
+            '<span>My Favorites</span>' +
           '</button>' +
         '</div>' +
         '<div class="wz-deck" id="wz-deck">' +
           '<article class="wz-card" id="wz-card">' +
-            '<button type="button" class="wz-fav-btn" id="wz-fav-btn" aria-label="Favorilere ekle" aria-pressed="false">' +
+            '<button type="button" class="wz-fav-btn" id="wz-fav-btn" aria-label="Add to favorites" aria-pressed="false">' +
               '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
               '<path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>' +
               '</svg>' +
@@ -494,11 +494,11 @@
           '</article>' +
         '</div>' +
         '<div class="wz-deck-controls">' +
-          '<button type="button" class="wz-nav-btn" id="wz-prev-btn" aria-label="Önceki söz">' +
+          '<button type="button" class="wz-nav-btn" id="wz-prev-btn" aria-label="Previous quote">' +
             '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>' +
           '</button>' +
           '<span class="wz-deck-pos" id="wz-deck-pos"></span>' +
-          '<button type="button" class="wz-nav-btn" id="wz-next-btn" aria-label="Sonraki söz">' +
+          '<button type="button" class="wz-nav-btn" id="wz-next-btn" aria-label="Next quote">' +
             '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>' +
           '</button>' +
         '</div>' +
@@ -506,11 +506,11 @@
       '</section>' +
 
       '<section class="wz-section wz-jar card">' +
-        '<p class="wz-section-title">Seni Sevme Nedenlerim</p>' +
+        '<p class="wz-section-title">Reasons I Love You</p>' +
         '<div class="wz-jar-wrap" id="wz-jar-wrap">' +
           '<div class="wz-jar-group" id="wz-jar-group">' +
             '<span class="wz-jar-bear" data-bear data-bear-mood="love" data-bear-arms="wide" data-bear-heart="true" data-bear-size="50" aria-hidden="true"></span>' +
-            '<button type="button" class="wz-jar-btn" id="wz-jar-btn" aria-label="Kavanozdan bir neden çek">' + JAR_SVG + '</button>' +
+            '<button type="button" class="wz-jar-btn" id="wz-jar-btn" aria-label="Draw a reason from the jar">' + JAR_SVG + '</button>' +
           '</div>' +
           '<p class="wz-jar-hint" id="wz-jar-hint"></p>' +
           '<p class="wz-jar-counter" id="wz-jar-counter"></p>' +
@@ -522,13 +522,13 @@
       '</section>' +
 
       '<section class="wz-section wz-letters card">' +
-        '<p class="wz-section-title">Açınca Oku</p>' +
+        '<p class="wz-section-title">Open When</p>' +
         '<div class="wz-letters-grid" id="wz-letters-grid"></div>' +
       '</section>' +
     '</div>';
 
   /**
-   * Renders the Sözler view into #words-root. Safe to call again (clears and rebuilds).
+   * Renders the Words view into #words-root. Safe to call again (clears and rebuilds).
    */
   function initWords() {
     var root = document.getElementById('words-root');

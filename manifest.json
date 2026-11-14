@@ -1,7 +1,7 @@
 {
-  "name": "Ayıcık (demo)",
-  "short_name": "Ayıcık",
-  "description": "Bir çiftin anıları, planları ve alışkanlık takibi — demo",
+  "name": "Little Bear (demo)",
+  "short_name": "Little Bear",
+  "description": "Memories, plans and habit tracking for a couple — demo",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#FFF7F4",

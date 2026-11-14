@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Memory Map
+ * Little Bear — Memory Map
  * Leaflet map with Firestore-synced memory pins, Firestore-only photo storage,
  * EXIF GPS gallery upload, and geocoder.
  */
@@ -30,8 +30,8 @@ function initMap() {
 
   /* Location search (Geocoder) */
   L.Control.geocoder({
-    placeholder: 'Konum ara...',
-    errorMessage: 'Konum bulunamadı',
+    placeholder: 'Search for a place...',
+    errorMessage: 'Place not found',
     geocoder: L.Control.Geocoder.nominatim(),
     position: 'topleft',
     collapsed: true,
@@ -94,7 +94,7 @@ function initMap() {
  * fallback — toggle #gallery-view/#map-view and the .seg-btn active state — plus the one thing
  * the fallback never had to do: Leaflet only measures its container correctly once that container
  * is actually visible, so every moment the map subview becomes visible (this switch, or the app's
- * own 'ayicik:tab' event firing while the map is already the active subview) gets one
+ * own 'littlebear:tab' event firing while the map is already the active subview) gets one
  * invalidateSize(), in a requestAnimationFrame so it runs after the layout that revealed it.
  */
 function initMemoriesSwitch() {
@@ -114,7 +114,7 @@ function initMemoriesSwitch() {
     btn.addEventListener('click', function () { activate(btn.dataset.seg); });
   });
 
-  document.addEventListener('ayicik:tab', function (e) {
+  document.addEventListener('littlebear:tab', function (e) {
     if (!e.detail || e.detail.tab !== 'memories-view') return;
     var mapView = document.getElementById('map-view');
     if (mapView && mapView.classList.contains('is-active')) anilarResizeMapNextFrame();
@@ -173,7 +173,7 @@ function syncMarkers(updatedMemories) {
 
 function addMarkerToMap(memory) {
   var icon = memory.source === 'gallery' ? cameraIcon : heartIcon;
-  var name = memory.title || 'Anı';
+  var name = memory.title || 'Memory';
   /* m6: `title` (a universal HTML attribute, reflected by Leaflet's own `icon.title = ...`) gives
      a native tooltip/fallback accessible name; `alt` is passed too for a real <img> icon, but a
      divIcon's icon element is a plain <div> — `alt` is only a reflected IDL property on
@@ -212,7 +212,7 @@ function showMemoryDetail(memory) {
       '<p class="detail-note">' + escapeHtml(memory.note || '') + '</p>' +
     '</div>' +
     '<div class="detail-actions">' +
-      '<button class="btn btn-danger" data-delete-memory="' + escapeHtml(memory.id) + '">Sil</button>' +
+      '<button class="btn btn-danger" data-delete-memory="' + escapeHtml(memory.id) + '">Delete</button>' +
     '</div>';
 
   /* Event delegation for delete */
@@ -294,7 +294,7 @@ function saveMemory() {
 
   var submitBtn = document.querySelector('#memory-form .btn-primary');
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Kaydediliyor...';
+  submitBtn.textContent = 'Saving...';
 
   var memoryId = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
@@ -329,22 +329,22 @@ function saveMemory() {
     return addMemoryToFirestore(memory);
   }).then(function () {
     closeModal('memory-modal');
-    showToast('Anı kaydedildi!');
+    showToast('Memory saved!');
   }).catch(function (err) {
     console.error('Firestore write error:', err);
     if (err.message && err.message.indexOf('size') !== -1) {
-      showToast('Fotoğraf çok büyük. Daha küçük fotoğraf dene.');
+      showToast('The photo is too big. Try a smaller photo.');
     } else {
-      showToast('Kaydetme hatası: ' + (err.message || 'Tekrar dene.'));
+      showToast('Could not save: ' + (err.message || 'Try again.'));
     }
   }).then(function () {
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Kaydet';
+    submitBtn.textContent = 'Save';
   });
 }
 
 function deleteMemory(id) {
-  if (!confirm('Bu anıyı silmek istediğine emin misin?')) return;
+  if (!confirm('Are you sure you want to delete this memory?')) return;
 
   deleteMemoryFromFirestore(id);
   closeModal('detail-modal');
@@ -381,7 +381,7 @@ function uploadFromGallery(files) {
   var failed = 0;
   var galleryCard = document.querySelector('#gallery-view .card');
   galleryCard.classList.add('gallery-uploading');
-  showToast('Yükleniyor... 0/' + total, 60000);
+  showToast('Uploading... 0/' + total, 60000);
 
   var chain = Promise.resolve();
 
@@ -390,7 +390,7 @@ function uploadFromGallery(files) {
       chain = chain.then(function () {
         return uploadSingleGalleryPhoto(file).then(function () {
           completed++;
-          showToast('Yükleniyor... ' + completed + '/' + total, 60000);
+          showToast('Uploading... ' + completed + '/' + total, 60000);
         }).catch(function (err) {
           failed++;
           completed++;
@@ -403,11 +403,11 @@ function uploadFromGallery(files) {
   chain.then(function () {
     galleryCard.classList.remove('gallery-uploading');
     if (failed === 0) {
-      showToast(total + ' fotoğraf yüklendi!', 4000);
+      showToast(total + (total === 1 ? ' photo uploaded!' : ' photos uploaded!'), 4000);
     } else if (failed === total) {
-      showToast('Yükleme başarısız oldu.', 4000);
+      showToast('Upload failed.', 4000);
     } else {
-      showToast((total - failed) + ' yüklendi, ' + failed + ' başarısız.', 4000);
+      showToast((total - failed) + ' uploaded, ' + failed + ' failed.', 4000);
     }
   });
 }
@@ -475,7 +475,7 @@ function previewPhoto(file) {
       } while (dataUrl.length > 500000 && quality > 0.2);
 
       if (dataUrl.length > 700000) {
-        showToast('Fotoğraf çok büyük, daha küçük bir fotoğraf dene.');
+        showToast('The photo is too big, try a smaller one.');
         return;
       }
 
@@ -579,7 +579,7 @@ function renderGallery() {
     grid.innerHTML =
       '<div class="gallery-empty anilar-empty">' +
         bearSVG({ mood: 'pleading', arms: 'wide', heart: true, size: 96 }) +
-        '<p class="anilar-empty-text">Henüz fotoğraflı anı eklenmedi, ilk anıyı sen ekle 💗</p>' +
+        '<p class="anilar-empty-text">No photo memories yet, add the first one 💗</p>' +
       '</div>';
     if (nomapSection) nomapSection.style.display = 'none';
     return;
@@ -692,5 +692,6 @@ function galleryUploadTitle(fileName) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   var parts = dateStr.split('-');
-  return parts[2] + '.' + parts[1] + '.' + parts[0];
+  var mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][parseInt(parts[1], 10) - 1] || parts[1];
+    return mon + ' ' + parseInt(parts[2], 10) + ', ' + parts[0];
 }

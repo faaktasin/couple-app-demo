@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Birthday surprise (Sürpriz) styling
+ * Little Bear — Birthday surprise (Surprise) styling
  * Covers #birthday-root's two tab states (locked gift + countdown / unlocked ready card), the
  * .nav-btn--gift glow, and every scene inside #birthday-overlay. All classes are bday-prefixed.
  * Colours/radii/shadows/fonts come from the shared tokens in css/style.css (:root) — never

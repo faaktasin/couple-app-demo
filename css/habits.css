@@ -1,5 +1,5 @@
 /**
- * Ayıcık - Takip (habit tracker) styling
+ * Little Bear - Habits (habit tracker) styling
  * Prefix: hb-. Reuses tokens and the .card / .modal shells from css/style.css. The day sheet is
  * the shared .modal-overlay (z-index 2000 in the ladder at the top of style.css), so nothing here
  * sets a z-index of its own.
@@ -41,7 +41,7 @@
   display: none;
 }
 
-/* The raised Sürpriz bubble stands about 30 px above the bar: the last card clears it by 16+. */
+/* The raised Surprise bubble stands about 30 px above the bar: the last card clears it by 16+. */
 #habits-view {
   padding-bottom: calc(var(--nav-h) + 24px);
 }

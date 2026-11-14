@@ -1,10 +1,10 @@
 /**
- * Ayıcık — Birthday surprise (Sürpriz)
+ * Little Bear — Birthday surprise (Surprise)
  * Owns #birthday-root (the 🎁 tab) and the contents of #birthday-overlay (the full-screen
  * surprise). Two tab states — LOCKED (a guarded gift box with a live countdown) and UNLOCKED (a
- * card that opens the surprise, plus a "Kuponların" list of her love coupons) — plus a scene
+ * card that opens the surprise, plus a "Coupons" list of her love coupons) — plus a scene
  * stepper: title, cake, balloons, gift+letter, [voice message — only when Can has dropped a
- * recording at audio/sesli-mesaj.*], love coupons, slideshow, end. Scenes advance with
+ * recording at audio/voice-message.*], love coupons, slideshow, end. Scenes advance with
  * goToNextScene() (relative to the current one), not a hardcoded index, precisely so the voice
  * scene can be spliced in or out without renumbering every other scene's continue button. Every
  * timer/animation this file starts is torn down when its scene ends, the overlay closes, or
@@ -48,7 +48,7 @@
 
   /* Chrome label CONTENT has no slot for — plain UI chrome (the overlay's own accessible name),
      not romantic/message text. Listed in this package's report per the module brief. */
-  var BDAY_OVERLAY_ARIA_LABEL = 'Doğum günü sürprizi';
+  var BDAY_OVERLAY_ARIA_LABEL = 'Birthday surprise';
 
   /* Filenames the iOS/Android photo picker assigns when nothing better is given — never worth
      showing as a slideshow caption ("IMG_4821", "image", "photo (12)", etc). */
@@ -130,10 +130,10 @@
 
   function bdayCountdownUnitsMarkup() {
     var units = [
-      { key: 'days', label: 'gün' },
-      { key: 'hours', label: 'saat' },
-      { key: 'minutes', label: 'dakika' },
-      { key: 'seconds', label: 'saniye' }
+      { key: 'days', label: 'days' },
+      { key: 'hours', label: 'hours' },
+      { key: 'minutes', label: 'minutes' },
+      { key: 'seconds', label: 'seconds' }
     ];
     return units.map(function (u) {
       return '<div class="countdown-unit"><span class="countdown-num" id="bday-cd-' + u.key + '">00</span>' +
@@ -164,10 +164,10 @@
     }
     var r = bdayComputeRemaining();
     var teases = CONTENT.birthday.locked.teases;
-    /* On the eve (the whole day before unlock), days is 0 — "Sabret, daha 0 gün var" reads oddly,
+    /* On the eve (the whole day before unlock), days is 0 — "Wait, 0 days to go" reads oddly,
        so on that day only the non-{days} teases are drawn from. */
     var pool = r.days > 0 ? teases : teases.filter(function (t) { return t.indexOf('{days}') === -1; });
-    var line = pool[Math.floor(Math.random() * pool.length)].replace('{days}', String(r.days));
+    var line = pool[Math.floor(Math.random() * pool.length)].replace('{days|day|days}', r.days === 1 ? 'day' : 'days').replace('{days}', String(r.days));
     var teaseEl = document.getElementById('bday-tease');
     if (teaseEl) teaseEl.textContent = line;
   }
@@ -177,7 +177,7 @@
     root.innerHTML =
       '<div class="bday-view bday-view--locked">' +
         '<div class="bday-lock-scene">' +
-          '<button type="button" class="bday-guard" id="bday-gift-trigger" aria-label="Hediye kutusu">' +
+          '<button type="button" class="bday-guard" id="bday-gift-trigger" aria-label="Gift box">' +
             bdayGiftSVG({ size: 150, className: 'bday-gift-svg' }) +
             '<span class="bday-guard-bear">' + bearSVG({ mood: 'pleading', arms: 'wide', size: 84 }) + '</span>' +
           '</button>' +
@@ -195,29 +195,29 @@
   function updateGiftNavGlow() {
     var navBtn = document.querySelector('.nav-btn--gift');
     if (!navBtn) return;
-    var seen = storageGet('ayicik-birthday-seen-year') === String(birthdayYear());
+    var seen = storageGet('littlebear-birthday-seen-year') === String(birthdayYear());
     navBtn.classList.toggle('is-glowing', isBirthdayUnlocked() && !seen);
   }
 
   function renderUnlocked(root) {
-    var seen = storageGet('ayicik-birthday-seen-year') === String(birthdayYear());
+    var seen = storageGet('littlebear-birthday-seen-year') === String(birthdayYear());
     /* CONTENT is the single source for this romantic copy; a fallback default covers the case
        CONTENT.birthday.ready is somehow missing (CONTENT is a read-only global this package
        never edits — the fallback is the only safety net if its shape ever changes). */
     var ready = (CONTENT.birthday && CONTENT.birthday.ready) || {};
-    var readyTitle = ready.title || 'Sürpriz seni bekliyor! 🎉';
+    var readyTitle = ready.title || 'Your surprise is waiting! 🎉';
     var readySubtitle = (seen ? ready.again : ready.firstTime) || (seen
-      ? 'İstersen tekrar aç, seninle her seferinde konuşmak isterim 💗'
-      : 'Dokun ve doğum günü sürprizini gör');
+      ? 'Open it again if you like, I would love to talk to you every time 💗'
+      : 'Tap and see your birthday surprise');
     var couponsContent = CONTENT.birthday.coupons || {};
-    var couponsTitle = couponsContent.title || 'Doğum günü kuponların 🎟️';
+    var couponsTitle = couponsContent.title || 'Your birthday coupons 🎟️';
     root.innerHTML =
       '<div class="bday-view bday-view--unlocked">' +
         '<div class="bday-ready-card">' +
           '<div class="bday-ready-bear">' + bearSVG({ mood: 'love', hat: true, heart: true, arms: 'up', size: 120 }) + '</div>' +
           '<h2 class="bday-ready-title">' + bdayEsc(readyTitle) + '</h2>' +
           '<p class="bday-ready-subtitle">' + bdayEsc(readySubtitle) + '</p>' +
-          '<button type="button" class="btn btn-primary bday-open-btn" id="bday-open-btn">🎁 Sürprizi Aç</button>' +
+          '<button type="button" class="btn btn-primary bday-open-btn" id="bday-open-btn">🎁 Open the Surprise</button>' +
         '</div>' +
         '<div class="bday-coupons-tab-section">' +
           '<h3 class="bday-coupons-tab-title">' + bdayEsc(couponsTitle) + '</h3>' +
@@ -256,7 +256,7 @@
            the gate for that case (startGateIfDue() otherwise only runs once, at load, from
            app.js's initFeatures()). Other packages (words.js, daily.js) listen for this exact
            event name to re-render their own once-per-load content; keep it as written. */
-        document.dispatchEvent(new CustomEvent('ayicik:birthday-unlocked'));
+        document.dispatchEvent(new CustomEvent('littlebear:birthday-unlocked'));
         if (typeof window.startGateIfDue === 'function') window.startGateIfDue();
       }
     } else if (!unlockedNow) {
@@ -282,7 +282,7 @@
 
   function maybeAutoOpenBirthday() {
     if (!isBirthdayUnlocked()) return;
-    var seenYear = storageGet('ayicik-birthday-seen-year');
+    var seenYear = storageGet('littlebear-birthday-seen-year');
     if (seenYear === String(birthdayYear())) return;
     if (window.isGateDue && window.isGateDue()) return;
     openBirthdaySurprise();
@@ -366,7 +366,7 @@
     var btn = document.getElementById('bday-mute-btn');
     if (btn) {
       btn.textContent = _bdayMuted ? '🔇' : '🔊';
-      btn.setAttribute('aria-label', _bdayMuted ? 'Sesi aç' : 'Sesi kapat');
+      btn.setAttribute('aria-label', _bdayMuted ? 'Sound on' : 'Sound off');
     }
   }
 
@@ -555,7 +555,7 @@
     var candles = '';
     var i;
     for (i = 0; i < 5; i++) {
-      candles += '<button type="button" class="bday-candle" data-candle="' + i + '" aria-label="Mum ' + (i + 1) + '">' +
+      candles += '<button type="button" class="bday-candle" data-candle="' + i + '" aria-label="Candle ' + (i + 1) + '">' +
         '<span class="bday-flame"></span><span class="bday-wick"></span></button>';
     }
     stage.innerHTML =
@@ -576,8 +576,8 @@
         '</div>' +
         '<div class="bday-after-blow" id="bday-after-blow" hidden>' +
           '<p class="bday-after-blow-text">' + bdayEsc(c.afterBlow) + '</p>' +
-          '<button type="button" class="bday-mute-btn" id="bday-mute-btn" aria-label="Sesi kapat">🔊</button>' +
-          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene1-continue" hidden>Devam 💕</button>' +
+          '<button type="button" class="bday-mute-btn" id="bday-mute-btn" aria-label="Sound off">🔊</button>' +
+          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene1-continue" hidden>Continue 💕</button>' +
         '</div>' +
       '</div>';
 
@@ -627,12 +627,12 @@
 
   function renderSceneBalloons(stage) {
     var wishes = CONTENT.birthday.balloons;
-    var balloonsPrompt = (CONTENT.birthday && CONTENT.birthday.balloonsPrompt) || 'Birini seç, bir dilek çıksın 🎈';
+    var balloonsPrompt = (CONTENT.birthday && CONTENT.birthday.balloonsPrompt) || 'Pick one, a wish will come out 🎈';
     var items = wishes.map(function (w, i) {
       return '<div class="bday-balloon-slot" data-slot="' + i + '">' +
         '<button type="button" class="bday-balloon" data-balloon="' + i +
           '" style="--bday-balloon-color:' + BDAY_BALLOON_COLORS[i % BDAY_BALLOON_COLORS.length] +
-          '" aria-label="Balonu patlat">' +
+          '" aria-label="Pop the balloon">' +
           '<span class="bday-balloon-body"></span><span class="bday-balloon-knot"></span><span class="bday-balloon-string"></span>' +
         '</button>' +
       '</div>';
@@ -642,8 +642,8 @@
       '<div class="bday-scene bday-scene--balloons">' +
         '<p class="bday-scene-subtitle">' + bdayEsc(balloonsPrompt) + '</p>' +
         '<div class="bday-balloon-grid" id="bday-balloon-grid">' + items + '</div>' +
-        '<p class="bday-balloon-counter" id="bday-balloon-counter">0 / ' + wishes.length + ' patlatıldı</p>' +
-        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene2-continue">Devam 💕</button>' +
+        '<p class="bday-balloon-counter" id="bday-balloon-counter">0 / ' + wishes.length + ' popped</p>' +
+        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene2-continue">Continue 💕</button>' +
       '</div>';
 
     var popped = 0;
@@ -660,7 +660,7 @@
         slot.innerHTML = '<div class="bday-balloon-wish">' + bdayEsc(wishes[i]) + '</div>';
         popped++;
         var counter = document.getElementById('bday-balloon-counter');
-        if (counter) counter.textContent = popped + ' / ' + wishes.length + ' patlatıldı';
+        if (counter) counter.textContent = popped + ' / ' + wishes.length + ' popped';
       });
     });
 
@@ -739,12 +739,12 @@
         '</div>' +
         '<div class="bday-letter card" id="bday-letter" hidden>' +
           '<p class="bday-letter-greeting">' + bdayEsc(c.letter.greeting) + '</p>' +
-          '<p class="bday-tap-hint" id="bday-letter-hint">Bitirmek için dokun</p>' +
+          '<p class="bday-tap-hint" id="bday-letter-hint">Tap to finish</p>' +
           '<div class="bday-letter-body" id="bday-letter-body">' +
             c.letter.paragraphs.map(function (_, i) { return '<p class="bday-letter-p" id="bday-letter-p-' + i + '"></p>'; }).join('') +
           '</div>' +
           '<p class="bday-letter-signature" id="bday-letter-signature" hidden>' + bdayEsc(c.letter.signature) + '</p>' +
-          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene3-continue" hidden>Devam 💕</button>' +
+          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene3-continue" hidden>Continue 💕</button>' +
         '</div>' +
       '</div>';
 
@@ -772,10 +772,10 @@
     return function cleanup() { bdaySkipTypewriter(); };
   }
 
-  /* ── Voice message probing (audio/sesli-mesaj.*) ─────────────────────── */
+  /* ── Voice message probing (audio/voice-message.*) ─────────────────────── */
 
   /* Extensions probed in order — the first that answers 200 to a HEAD request wins. Can drops
-     one file at audio/sesli-mesaj.<ext> in the repo; none of these exist until he does, so the
+     one file at audio/voice-message.<ext> in the repo; none of these exist until he does, so the
      scene is skipped entirely on every load until then. */
   var BDAY_VOICE_EXTS = ['m4a', 'mp3', 'ogg', 'opus', 'wav'];
 
@@ -783,7 +783,7 @@
   var _bdayVoiceProbePromise = null;
 
   /**
-   * Resolves to the first audio/sesli-mesaj.<ext> that exists (a cheap HEAD request, in order), or
+   * Resolves to the first audio/voice-message.<ext> that exists (a cheap HEAD request, in order), or
    * null if none do. Cached for the page's lifetime — a rehearsal or a real visit only probes once.
    * @returns {Promise<string|null>}
    */
@@ -799,7 +799,7 @@
         _bdayVoiceUrl = null;
         return null;
       }
-      var url = 'audio/sesli-mesaj.' + BDAY_VOICE_EXTS[i];
+      var url = 'audio/voice-message.' + BDAY_VOICE_EXTS[i];
       return fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function (res) {
         if (res && res.ok) {
           _bdayVoiceUrl = url;
@@ -822,10 +822,10 @@
   function makeRenderSceneVoice(voiceUrl) {
     return function renderSceneVoice(stage) {
       var c = (CONTENT.birthday && CONTENT.birthday.voice) || {};
-      var title = c.title || 'Küçük bir ses notu var';
-      var hint = c.hint || 'Sesini aç, sonra kalbe dokun';
-      var playLabel = c.play || 'Dinle';
-      var pauseLabel = c.pause || 'Durdur';
+      var title = c.title || 'There is a little voice note';
+      var hint = c.hint || 'Turn up the sound, then tap the heart';
+      var playLabel = c.play || 'Play';
+      var pauseLabel = c.pause || 'Pause';
       var r = 32;
       var circumference = 2 * Math.PI * r;
 
@@ -843,7 +843,7 @@
             '<span class="bday-voice-heart" id="bday-voice-heart" aria-hidden="true">💗</span>' +
           '</button>' +
           '<audio id="bday-voice-audio" preload="none" src="' + bdayEsc(voiceUrl) + '"></audio>' +
-          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene-voice-continue">Devam 💕</button>' +
+          '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene-voice-continue">Continue 💕</button>' +
         '</div>';
 
       /* Defensive: any lingering music-box note (in theory already stopped by the cake scene's own
@@ -892,10 +892,10 @@
 
   /* ── Coupon storage (JSON map over time.js's storageGet/storageSet) ──── */
 
-  var BDAY_COUPONS_KEY = 'ayicik-coupons-used';
+  var BDAY_COUPONS_KEY = 'littlebear-coupons-used';
 
   /* Preview-mode shadow, same contract as js/words.js's own: while a rehearsal is live
-     (?onizleme=dogumgunu), reads/writes to this key never touch real localStorage. Reproduced here
+     (?preview=birthday), reads/writes to this key never touch real localStorage. Reproduced here
      because js/time.js's TIME_PREVIEW_PROTECTED_KEYS is frozen for this package and does not know
      this key. Seeded once from the real value, then every write during the rehearsal only updates
      the shadow copy and vanishes when the tab closes. */
@@ -937,7 +937,8 @@
   function bdayIsoToTr(iso) {
     var parts = String(iso || '').split('-');
     if (parts.length !== 3) return '';
-    return parts[2] + '.' + parts[1] + '.' + parts[0];
+    var mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][parseInt(parts[1], 10) - 1] || parts[1];
+    return mon + ' ' + parseInt(parts[2], 10) + ', ' + parts[0];
   }
 
   /** Marks a coupon used (idempotent — a coupon already used keeps its original date) and persists. */
@@ -953,7 +954,7 @@
   /* ── Coupon rendering (shared by the overlay scene and the 🎁-tab list) ── */
 
   function bdayCouponItemMarkup(item, usedIso) {
-    var usedLabel = (CONTENT.birthday.coupons && CONTENT.birthday.coupons.used) || 'Kullanıldı';
+    var usedLabel = (CONTENT.birthday.coupons && CONTENT.birthday.coupons.used) || 'Used';
     var stampText = usedIso ? (usedLabel + ' · ' + bdayIsoToTr(usedIso)) : '';
     return '<button type="button" class="bday-coupon' + (usedIso ? ' is-used' : '') +
         '" data-coupon="' + bdayEsc(item.id) + '" aria-label="' + bdayEsc(item.title) + '">' +
@@ -976,7 +977,7 @@
   /** Stamps every on-screen instance of coupon `id` (the scene booklet AND the 🎁-tab list may
    *  both be in the DOM at once — updating by data-coupon reaches whichever exist). */
   function bdayApplyCouponStampToDom(id, iso) {
-    var usedLabel = (CONTENT.birthday.coupons && CONTENT.birthday.coupons.used) || 'Kullanıldı';
+    var usedLabel = (CONTENT.birthday.coupons && CONTENT.birthday.coupons.used) || 'Used';
     var stampText = usedLabel + ' · ' + bdayIsoToTr(iso);
     var nodes = document.querySelectorAll('.bday-coupon[data-coupon="' + id + '"]');
     Array.prototype.forEach.call(nodes, function (btn) {
@@ -1026,10 +1027,10 @@
       '<div class="bday-coupon-confirm-card">' +
         '<p class="bday-coupon-confirm-emoji" id="bday-coupon-confirm-emoji" aria-hidden="true"></p>' +
         '<h3 class="bday-coupon-confirm-title" id="bday-coupon-confirm-title"></h3>' +
-        '<p class="bday-coupon-confirm-text">' + bdayEsc(c.confirm || 'Bu kuponu şimdi kullanmak istiyor musun?') + '</p>' +
+        '<p class="bday-coupon-confirm-text">' + bdayEsc(c.confirm || 'Do you want to use this coupon now?') + '</p>' +
         '<div class="bday-coupon-confirm-actions">' +
-          '<button type="button" class="btn btn-primary" id="bday-coupon-confirm-yes">' + bdayEsc(c.yes || 'Evet, kullanıyorum') + '</button>' +
-          '<button type="button" class="btn bday-coupon-confirm-no" id="bday-coupon-confirm-no">' + bdayEsc(c.no || 'Sonra') + '</button>' +
+          '<button type="button" class="btn btn-primary" id="bday-coupon-confirm-yes">' + bdayEsc(c.yes || 'Yes, use it') + '</button>' +
+          '<button type="button" class="btn bday-coupon-confirm-no" id="bday-coupon-confirm-no">' + bdayEsc(c.no || 'Later') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(el);
@@ -1089,10 +1090,10 @@
     var c = CONTENT.birthday.coupons || {};
     stage.innerHTML =
       '<div class="bday-scene bday-scene--coupons">' +
-        '<h2 class="bday-coupons-title">' + bdayEsc(c.title || 'Doğum günü kuponların 🎟️') + '</h2>' +
+        '<h2 class="bday-coupons-title">' + bdayEsc(c.title || 'Your birthday coupons 🎟️') + '</h2>' +
         '<p class="bday-scene-subtitle">' + bdayEsc(c.hint || '') + '</p>' +
         '<div class="bday-coupon-booklet" id="bday-coupon-booklet">' + bdayCouponsListMarkup() + '</div>' +
-        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene-coupons-continue">Devam 💕</button>' +
+        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene-coupons-continue">Continue 💕</button>' +
       '</div>';
     bdayWireCouponContainer(document.getElementById('bday-coupon-booklet'));
     document.getElementById('bday-scene-coupons-continue').addEventListener('click', function () { goToNextScene(); });
@@ -1147,7 +1148,7 @@
       '<div class="bday-scene bday-scene--slideshow">' +
         '<p class="bday-scene-subtitle">' + bdayEsc(CONTENT.birthday.slideshow.title) + '</p>' +
         '<div class="bday-polaroid-stack" id="bday-polaroid-stack">' + polaroids + '</div>' +
-        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene4-continue">Devam 💕</button>' +
+        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene4-continue">Continue 💕</button>' +
       '</div>';
 
     var frames = stage.querySelectorAll('.bday-polaroid');
@@ -1214,7 +1215,7 @@
           bearSVG({ mood: 'love', hat: true, arms: 'up', size: 74 }) +
         '</div>' +
         '<h1 class="bday-title-script" id="bday-title-text"></h1>' +
-        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene0-continue">Devam 💕</button>' +
+        '<button type="button" class="btn btn-primary bday-continue-btn" id="bday-scene0-continue">Continue 💕</button>' +
       '</div>';
 
     var titleEl = document.getElementById('bday-title-text');
@@ -1304,7 +1305,7 @@
     /* M2: the seen-year flag is written on CLOSE (closeBirthdaySurprise), not here. Writing it
        the moment the overlay opens meant an interrupted surprise (a call, iOS evicting the
        backgrounded app) never got re-offered — maybeAutoOpenBirthday() saw the flag already set
-       and silently left her on the plain "yeniden aç" card. */
+       and silently left her on the plain "open again" card. */
     _bdayReturnFocusEl = document.activeElement;
 
     var overlay = document.getElementById('birthday-overlay');
@@ -1314,7 +1315,7 @@
     var appContent = document.getElementById('app-content');
     if (appContent) appContent.setAttribute('inert', '');
     overlay.innerHTML =
-      '<button type="button" class="icon-btn bday-close-btn" id="bday-close-btn" aria-label="Kapat">&times;</button>' +
+      '<button type="button" class="icon-btn bday-close-btn" id="bday-close-btn" aria-label="Close">&times;</button>' +
       '<div class="bday-scene-stage" id="bday-scene-stage"></div>';
     overlay.hidden = false;
     overlay.setAttribute('aria-label', BDAY_OVERLAY_ARIA_LABEL);
@@ -1344,7 +1345,7 @@
     /* M2: written here (on a real close), not the moment the overlay opened — see
        openBirthdaySurprise()'s own comment. storageSet() is itself a no-op in preview mode
        (time.js's TIME_PREVIEW_PROTECTED_KEYS), so a rehearsal still persists nothing. */
-    storageSet('ayicik-birthday-seen-year', String(birthdayYear()));
+    storageSet('littlebear-birthday-seen-year', String(birthdayYear()));
     updateGiftNavGlow();
 
     var overlay = document.getElementById('birthday-overlay');

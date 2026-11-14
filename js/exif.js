@@ -1,5 +1,5 @@
 /**
- * Ayıcık — EXIF GPS Reader
+ * Little Bear — EXIF GPS Reader
  * Pure JavaScript EXIF parser that extracts GPS coordinates from JPEG files.
  * No external dependencies.
  */

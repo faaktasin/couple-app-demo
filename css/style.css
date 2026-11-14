@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Styles (foundation)
+ * Little Bear — Styles (foundation)
  * Romantic, cute design: cream ground, blush cards, soft pink shadows, generous radii, bears and
  * hearts throughout. Fonts are linked in index.html (Dancing Script / Fredoka / Quicksand).
  *
@@ -333,7 +333,7 @@ button, input, textarea {
   }
 }
 
-/* The check inside the Takip heart is cut out of it in the bar's own ground colour. */
+/* The check inside the Habits heart is cut out of it in the bar's own ground colour. */
 .nav-check {
   stroke: var(--paper);
 }
@@ -849,7 +849,7 @@ button, input, textarea {
   z-index: 2000;
   background: rgba(74, 44, 54, 0.45);
   backdrop-filter: blur(4px);
-  /* Safari before 18 ignores unprefixed backdrop-filter (m3) — without this the Anı modals get a
+  /* Safari before 18 ignores unprefixed backdrop-filter (m3) — without this the Memory modals get a
      flat backdrop, unlike the header/nav which already carry both. */
   -webkit-backdrop-filter: blur(4px);
   display: flex;
@@ -902,7 +902,7 @@ button, input, textarea {
   color: var(--rose-strong);
 }
 
-/* The ?ozel-metin panel: the hint sits clear of the buttons, the buttons clear of each other. */
+/* The ?private-texts panel: the hint sits clear of the buttons, the buttons clear of each other. */
 .private-hint {
   margin-bottom: 16px;
 }

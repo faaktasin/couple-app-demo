@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Tarihler (Dates) view
+ * Little Bear — Dates (Dates) view
  * Builds six countdown/since cards once — the four in the containers index.html already provides
  * (#countdown-her-bday, #countdown-his-bday, #countdown-meet, #countdown-love) plus an engagement
  * since-card and a wedding card built entirely from script, no matching container in index.html —
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var HER_LABEL_TODAY = "Elif'in Doğum Günü";
+  var HER_LABEL_TODAY = "Elif's Birthday";
   /* CONTENT (js/content.js) has no line for "it's HIS birthday today" — every message there is
      written for Elif's days, not Can's. A small default in the app's own sweet voice. */
   /* His card on his birthday; the words live in CONTENT.dates.hisToday. */
@@ -33,12 +33,12 @@
 
   function readDatesContent() {
     var d = CONTENT.dates || {};
-    HIS_TODAY_LINE = d.hisToday || 'Bugün benim doğum günüm 🎉';
-    ENGAGEMENT_LABEL = d.engagementLabel || 'Özel günden beri';
-    WEDDING_LABEL = d.weddingLabel || 'Düğünümüze';
-    WEDDING_APPROX = d.weddingApprox || 'yaklaşık {months} ay var';
-    WEDDING_THIS_MONTH = d.weddingThisMonth || 'Bu ay büyük gün var 💍';
-    WEDDING_DONE = d.weddingDone || 'Evlendik! 💍';
+    HIS_TODAY_LINE = d.hisToday || 'It is my birthday today 🎉';
+    ENGAGEMENT_LABEL = d.engagementLabel || 'Since our special day';
+    WEDDING_LABEL = d.weddingLabel || 'Until our wedding';
+    WEDDING_APPROX = d.weddingApprox || 'about {months} {months|month|months} to go';
+    WEDDING_THIS_MONTH = d.weddingThisMonth || 'Our wedding is this month 💍';
+    WEDDING_DONE = d.weddingDone || 'We got married! 💍';
   }
 
   var _initialized = false;
@@ -50,22 +50,22 @@
   }
 
   /**
-   * "300. güne 40 gün kaldı 💕" — the next round hundred days past `elapsedDays`.
+   * "40 days until day 300 💕" — the next round hundred days past `elapsedDays`.
    * @param {number} elapsedDays
    * @returns {string}
    */
   function nextMilestoneLine(elapsedDays) {
     var next = (Math.floor(elapsedDays / 100) + 1) * 100;
     var left = next - elapsedDays;
-    return next + '. güne ' + left + ' gün kaldı 💕';
+    return left + (left === 1 ? ' day' : ' days') + ' until day ' + next + ' 💕';
   }
 
   function unitsMarkup(prefix) {
     return (
-      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-days">0</span><span class="countdown-unit-label">gün</span></div>' +
-      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-hours">00</span><span class="countdown-unit-label">saat</span></div>' +
-      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-minutes">00</span><span class="countdown-unit-label">dakika</span></div>' +
-      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-seconds">00</span><span class="countdown-unit-label">saniye</span></div>'
+      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-days">0</span><span class="countdown-unit-label">days</span></div>' +
+      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-hours">00</span><span class="countdown-unit-label">hours</span></div>' +
+      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-minutes">00</span><span class="countdown-unit-label">minutes</span></div>' +
+      '<div class="countdown-unit"><span class="countdown-num" data-dts-unit="' + prefix + '-seconds">00</span><span class="countdown-unit-label">seconds</span></div>'
     );
   }
 
@@ -229,14 +229,14 @@
     };
   }
 
-  var WEDDING_MONTH_NAMES_TR = [
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+  var WEDDING_MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
   /** "Month YYYY" from CONFIG.wedding's {year, month}. */
   function weddingMonthLabel(w) {
-    return (WEDDING_MONTH_NAMES_TR[w.month - 1] || '') + ' ' + w.year;
+    return (WEDDING_MONTH_NAMES[w.month - 1] || '') + ' ' + w.year;
   }
 
   /**
@@ -415,7 +415,7 @@
 
     wedding.stateLine.hidden = false;
     if (st.mode === 'approx') {
-      wedding.stateLine.textContent = WEDDING_APPROX.replace('{months}', st.months);
+      wedding.stateLine.textContent = WEDDING_APPROX.replace('{months|month|months}', st.months === 1 ? 'month' : 'months').replace('{months}', st.months);
     } else if (st.mode === 'thisMonth') {
       wedding.stateLine.textContent = WEDDING_THIS_MONTH;
     } else {
@@ -448,7 +448,7 @@
   }
 
   /**
-   * Builds the Tarihler view once and starts its per-second tick. Idempotent — a second call
+   * Builds the Dates view once and starts its per-second tick. Idempotent — a second call
    * (e.g. a re-auth re-running initFeatures()) does nothing.
    */
   function initDates() {
@@ -469,7 +469,7 @@
 
     /* Covers the case where the calendar flips to her birthday while she is on another tab: the
        state switch already happened in tick(), this just plays the effect once she looks. */
-    document.addEventListener('ayicik:tab', function (e) {
+    document.addEventListener('littlebear:tab', function (e) {
       if (e.detail && e.detail.tab === 'dates-view') triggerHerCelebrationEffect();
     });
 

@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Kawaii Bears (idle motion) — soft baby-faced plush
+ * Little Bear — Kawaii Bears (idle motion) — soft baby-faced plush
  * Every animation is a CSS keyframe driving transform/opacity on a group — no JS timers. Motion is
  * deliberately gentle: sine-like easing, small amplitudes, long cycles. The host page's global
  * reduced-motion rule (css/style.css) shortens every duration; the @media block at the bottom also

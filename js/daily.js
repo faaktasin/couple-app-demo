@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Bugün (Today)
+ * Little Bear — Today (Today)
  * Daily love message + shuffle and the Firestore-synced to-do list (same logic and same
  * Firestore calls as before this package's rework) plus this package's own additions: a
  * time-of-day bear greeting and the "days together" pill with its next-milestone line.
@@ -95,7 +95,7 @@
       list.innerHTML =
         '<div class="bgn-todo-empty">' +
           '<div class="bgn-todo-empty-bear">' + bearSVG({ mood: 'pleading', arms: 'down', size: 60 }) + '</div>' +
-          '<p class="todo-empty">Henüz bir plan eklenmedi</p>' +
+          '<p class="todo-empty">No plans yet</p>' +
         '</div>';
       return;
     }
@@ -110,7 +110,7 @@
           '<span class="checkmark"></span>' +
         '</label>' +
         '<span class="todo-text">' + escapeHtml(t.text) + '</span>' +
-        '<button class="todo-delete" data-delete-id="' + escapeHtml(t.id) + '" title="Sil">&times;</button>' +
+        '<button class="todo-delete" data-delete-id="' + escapeHtml(t.id) + '" title="Delete">&times;</button>' +
       '</div>';
     }).join('');
   }
@@ -183,7 +183,7 @@
         '</svg>' +
         '<span>' + escapeHtml(CONTENT.together.prefix) + ' <strong class="bgn-together-days">' + days + '</strong> ' + escapeHtml(CONTENT.together.suffix) + '</span>' +
       '</div>' +
-      '<p class="bgn-milestone">' + nextMilestone + '. günümüze ' + daysToMilestone + ' gün kaldı 💕</p>';
+      '<p class="bgn-milestone">' + daysToMilestone + (daysToMilestone === 1 ? ' day' : ' days') + ' until day ' + nextMilestone + ' 💕</p>';
   }
 
   /* js/birthday.js dispatches this on document the instant appNow() crosses into her birthday,
@@ -191,7 +191,7 @@
      reads appNow() is stale until something re-renders it, so refresh it live: the greeting, the
      together pill/next-milestone line, and the daily message. Registered once at module load
      (not inside initDaily/initToday, which can re-run and would stack duplicate listeners). */
-  document.addEventListener('ayicik:birthday-unlocked', function () {
+  document.addEventListener('littlebear:birthday-unlocked', function () {
     renderGreeting();
     renderTogether();
     var msgEl = document.getElementById('daily-message');

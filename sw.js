@@ -1,9 +1,9 @@
 /**
- * Ayıcık — Service Worker
+ * Little Bear — Service Worker
  * Network-first strategy: always fetches latest, falls back to cache offline.
  */
 
-var CACHE_NAME = 'ayicik-demo-v1';
+var CACHE_NAME = 'littlebear-demo-v2';
 var ASSETS = [
   './',
   './index.html',

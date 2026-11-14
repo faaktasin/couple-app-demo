@@ -1,12 +1,12 @@
 /**
- * Ayıcık — Private texts
+ * Little Bear — Private texts
  * The couple's personal texts are not shipped with the page. After sign-in they are read from one
  * Firestore document, users/{uid}/private/texts = { json: '<payload as a JSON string>', updatedAt },
  * and merged into the globals the rest of the app already reads (CONTENT, CONFIG, LOVE_MESSAGES).
  * Payload: { version: 1, content: {...}, config: {...}, loveMessages: [...] } — each part optional.
  * Runs once, from firebase.js's auth callback, before the app is shown; with no document the texts
  * in js/content.js and js/data.js simply stay. Also holds the small import/export panel that is
- * opened by adding ?ozel-metin to the address after sign-in. Firestore is reached through
+ * opened by adding ?private-texts to the address after sign-in. Firestore is reached through
  * userCollection() only (tests/checks/rules.mjs).
  */
 
@@ -128,7 +128,7 @@ function loadPrivateTexts() {
   }
 }
 
-/* ── Import / export panel (?ozel-metin) ────────────── */
+/* ── Import / export panel (?private-texts) ────────────── */
 
 var PRIVATE_PANEL_ID = 'private-modal';
 
@@ -178,7 +178,7 @@ function _privateDownload() {
     var url = URL.createObjectURL(blob);
     var link = document.createElement('a');
     link.href = url;
-    link.download = 'ozel-metinler.json';
+    link.download = 'private-texts.json';
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -208,7 +208,7 @@ function _buildPrivatePanel() {
   var close = document.createElement('button');
   close.type = 'button';
   close.className = 'modal-close';
-  close.setAttribute('aria-label', 'Kapat');
+  close.setAttribute('aria-label', 'Close');
   close.innerHTML = '&times;';
   close.addEventListener('click', function () { closeModal(PRIVATE_PANEL_ID); });
   header.appendChild(title);
@@ -261,11 +261,11 @@ function _buildPrivatePanel() {
   return overlay;
 }
 
-/** Opens the panel when the address carries ?ozel-metin. Called once, from onAppReady(). */
+/** Opens the panel when the address carries ?private-texts. Called once, from onAppReady(). */
 function maybeOpenPrivatePanel() {
   var asked = false;
   try {
-    asked = new URLSearchParams(window.location.search).has('ozel-metin');
+    asked = new URLSearchParams(window.location.search).has('private-texts');
   } catch (err) {
     asked = false;
   }

@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Takip (the couple's daily habit tracker)
+ * Little Bear — Habits (the couple's daily habit tracker)
  *
  * Stages 2 and 3 of the build: the numbers and the data wiring (stage 2), then the screens -
  * "Ben kimim?", today's panel, the month page with its calendar and the day sheet (stage 3,
@@ -461,7 +461,7 @@
       if (state.view === m) state.view = null;
       syncSubscriptions();
     }
-    document.dispatchEvent(new CustomEvent('ayicik:habits-day', { detail: { day: d, month: m } }));
+    document.dispatchEvent(new CustomEvent('littlebear:habits-day', { detail: { day: d, month: m } }));
     renderAll();
     return true;
   }
@@ -504,7 +504,7 @@
      The screens never draw from a local guess: a tick is WRITTEN, and the boxes change when the
      month document's snapshot comes back (the same way the to-do list in js/daily.js works). */
 
-  var ME_KEY = 'ayicik-habits-me';
+  var ME_KEY = 'littlebear-habits-me';
   var HEART_D = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
   var LOCK_D = 'M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z';
   var RING_R = 7.5;
@@ -516,7 +516,10 @@
   }
 
   function fmt(text, values) {
-    return String(text).replace(/\{(\w+)\}/g, function (all, key) {
+    // {n|day|days}: the first word when the number is 1, the second otherwise
+    return String(text).replace(/\{(\w+)\|([^|}]*)\|([^}]*)\}/g, function (all, key, one, many) {
+      return values && Number(values[key]) === 1 ? one : many;
+    }).replace(/\{(\w+)\}/g, function (all, key) {
       return values && values[key] != null ? values[key] : '';
     });
   }
@@ -640,7 +643,7 @@
     var rows = dueItems(key, now).map(function (item) { return rowHtml(item, key, ''); }).join('');
     return '<section class="card hb-today">' +
       '<div class="hb-today-head"><h2 class="hb-title">' + escapeHtml(c.today.title) + '</h2>' +
-      '<span class="hb-today-date">' + escapeHtml(c.days[now.getDay()] + ', ' + now.getDate() + ' ' + c.months[now.getMonth()]) + '</span></div>' +
+      '<span class="hb-today-date">' + escapeHtml(c.days[now.getDay()] + ', ' + c.months[now.getMonth()] + ' ' + now.getDate()) + '</span></div>' +
       '<p class="hb-hint">' + escapeHtml(c.today.hint) + '</p>' +
       '<div class="hb-rows">' + rows + '</div>' +
     '</section>';
@@ -663,9 +666,9 @@
     return p === null ? '' : String(roundPct(p));
   }
 
-  /** '%70', or a dash while nothing is due. */
+  /** '70%', or a dash while nothing is due. */
   function pctLabel(p) {
-    return p === null || p === undefined ? copy().noData : '%' + roundPct(p);
+    return p === null || p === undefined ? copy().noData : roundPct(p) + '%';
   }
 
   function dayCell(rec, vm, todayKey) {
@@ -673,7 +676,7 @@
     var key = rec.key;
     var startKey = CONFIG.habitsStart + '-01';
     var tappable = key <= todayKey && key >= startKey;
-    var dayName = rec.n + ' ' + c.months[parseInt(vm.slice(5, 7), 10) - 1];
+    var dayName = c.months[parseInt(vm.slice(5, 7), 10) - 1] + ' ' + rec.n;
     if (!tappable) {
       return '<div class="hb-day is-future" data-day="' + key + '" aria-disabled="true"><span class="hb-day-n">' + rec.n + '</span></div>';
     }
@@ -1002,14 +1005,14 @@
       '<p class="hb-teaser-text">' + escapeHtml(c.report.teaser) + '</p></section>';
   }
 
-  /* ── The log ("Geçmiş") ────────────────────────────────────────────────── */
+  /* ── The log ("History") ────────────────────────────────────────────────── */
 
   function logWhen(entry) {
     var ms = typeof habitLogMillis === 'function' ? habitLogMillis(entry) : 0;
     if (!ms) return '';
     var d = new Date(ms);
     if (isNaN(d.getTime())) return '';
-    return d.getDate() + ' ' + copy().monthsShort[d.getMonth()] + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    return copy().monthsShort[d.getMonth()] + ' ' + d.getDate() + ', ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
   }
 
   /** The habit's short label; an id that is not in CONFIG.habits (a stored value) prints as ''. */
@@ -1085,7 +1088,7 @@
     if (!key) return;
     var c = copy();
     var d = dateOf(key);
-    title.textContent = d.getDate() + ' ' + c.months[d.getMonth()] + ' ' + c.days[d.getDay()];
+    title.textContent = c.days[d.getDay()] + ', ' + c.months[d.getMonth()] + ' ' + d.getDate();
     setRegion('sheet', content, sheetHtml(key, appNow()));
   }
 
@@ -1165,7 +1168,7 @@
     var key = btn.getAttribute('data-day');
     var itemId = btn.getAttribute('data-item');
     if (!canTick(person)) return;
-    /* The rehearsal clock (?onizleme=dogumgunu) dates every tap a year ahead: never write from it. */
+    /* The rehearsal clock (?preview=birthday) dates every tap a year ahead: never write from it. */
     if (isPreviewMode()) {
       if (typeof showToast === 'function') showToast(copy().previewNote);
       return;
@@ -1273,7 +1276,7 @@
           state.momPinned = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
         }
       }, true);
-      /* the tab is hidden at start-up: the strip has no width until Takip is opened */
+      /* the tab is hidden at start-up: the strip has no width until Habits is opened */
       if (typeof ResizeObserver === 'function') new ResizeObserver(pinMom).observe(mom);
     }
   }

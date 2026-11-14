@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Cloud Firestore security rules for ayicik-demo.
+// Cloud Firestore security rules for littlebear-demo.
 // This file is the text published in the Firebase console (Firestore Database > Rules),
 // as read back from the console on 2026-10-23 (published 2026-04-04).
 // Every document the app reads or writes sits under users/{uid}/ (js/firebase.js

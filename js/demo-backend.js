@@ -1,5 +1,5 @@
 /**
- * Ayıcık demo — in-browser stand-in for the Firebase compat API.
+ * Little Bear demo — in-browser stand-in for the Firebase compat API.
  *
  * Replaces the three firebase-*-compat.js scripts. It fakes exactly the part of the API the app
  * uses (initializeApp, auth(), firestore() with doc/collection refs, set with merge, update,
@@ -7,7 +7,7 @@
  * the whole "database" in localStorage under one key. Nothing leaves the browser.
  *
  * Also: seeds demo data on the first sign-in (js demo seed section below), provides no-op shims for
- * the removed Google Drive helpers, and wires the "Sıfırla" link of the demo ribbon.
+ * the removed Google Drive helpers, and wires the "Reset" link of the demo ribbon.
  *
  * Keys in localStorage: demo-db (the database), demo-auth (signed-in e-mail), demo-seeded (flag).
  */
@@ -350,10 +350,10 @@
   /* ── Google Drive shims (Drive uploads were removed; photos go to the database only) ─────── */
 
   window.ensureGoogleAuth = function () {
-    return Promise.reject(new Error('Demo: Drive yok, fotoğraf bu tarayıcıda saklanır.'));
+    return Promise.reject(new Error('Demo: there is no Drive, photos stay in this browser.'));
   };
   window.uploadToDrive = function () {
-    return Promise.reject(new Error('Demo: Drive yok.'));
+    return Promise.reject(new Error('Demo: there is no Drive.'));
   };
   window.deleteFromDrive = function () { /* nothing to delete */ };
   window.getDriveImageUrl = function (fileId) {
@@ -444,21 +444,21 @@
   }
 
   var DEMO_MEMORIES = [
-    { title: 'Galata Kulesi\'nde gün batımı', date: '2026-05-02', note: 'Örnek anı: kulenin dibinde simit, martılar ve uzun bir yürüyüş.', lat: 41.0256, lng: 28.9742 },
-    { title: 'Moda sahilinde yürüyüş', date: '2026-05-23', note: 'Örnek anı: sahil boyunca yürüyüp dondurma yedik.', lat: 40.9876, lng: 29.0258 },
-    { title: 'Emirgan Korusu\'nda piknik', date: '2026-06-14', note: 'Örnek anı: çimenlerde battaniye, sandviç ve kitap.', lat: 41.1085, lng: 29.0550 },
-    { title: 'Kadıköy çarşısında kahve', date: '2026-07-04', note: 'Örnek anı: dar sokaklarda küçük bir kahve molası.', lat: 40.9903, lng: 29.0230 },
-    { title: 'Kız Kulesi önünde çay', date: '2026-07-26', note: 'Örnek anı: Üsküdar sahilinde çay ve gün batımı.', lat: 41.0211, lng: 29.0041 },
-    { title: 'Ortaköy\'de boğaz manzarası', date: '2026-08-15', note: 'Örnek anı: iskelede oturup vapurları izledik.', lat: 41.0476, lng: 29.0268 },
-    { title: 'Belgrad Ormanı yürüyüşü', date: '2026-09-06', note: 'Örnek anı: ağaçların arasında uzun ve sakin bir patika.', lat: 41.1814, lng: 28.9894 },
-    { title: 'Büyükada\'da bisiklet', date: '2026-09-27', note: 'Örnek anı: adada bisiklet turu ve limonata.', lat: 40.8590, lng: 29.1257 }
+    { title: 'Sunset at Galata Tower', date: '2026-05-02', note: 'Sample memory: simit at the foot of the tower, seagulls and a long walk.', lat: 41.0256, lng: 28.9742 },
+    { title: 'A walk on the Moda seaside', date: '2026-05-23', note: 'Sample memory: we walked along the shore and ate ice cream.', lat: 40.9876, lng: 29.0258 },
+    { title: 'Picnic in Emirgan Park', date: '2026-06-14', note: 'Sample memory: a blanket on the grass, sandwiches and a book.', lat: 41.1085, lng: 29.0550 },
+    { title: 'Coffee at the Kadıköy market', date: '2026-07-04', note: 'Sample memory: a little coffee break in the narrow streets.', lat: 40.9903, lng: 29.0230 },
+    { title: 'Tea by the Maiden\'s Tower', date: '2026-07-26', note: 'Sample memory: tea and a sunset on the Üsküdar shore.', lat: 41.0211, lng: 29.0041 },
+    { title: 'Bosphorus view at Ortaköy', date: '2026-08-15', note: 'Sample memory: we sat on the pier and watched the ferries.', lat: 41.0476, lng: 29.0268 },
+    { title: 'A walk in Belgrad Forest', date: '2026-09-06', note: 'Sample memory: a long, quiet path between the trees.', lat: 41.1814, lng: 28.9894 },
+    { title: 'Cycling on Büyükada', date: '2026-09-27', note: 'Sample memory: a bike ride around the island and lemonade.', lat: 40.8590, lng: 29.1257 }
   ];
 
   var DEMO_TODOS = [
-    { text: 'Hafta sonu için kahvaltı yeri bul', done: false },
-    { text: 'Birlikte yeni bir film seç', done: true },
-    { text: 'Fotoğraf albümünü tamamla', done: false },
-    { text: 'Akşam yürüyüşüne çık', done: false }
+    { text: 'Find a breakfast place for the weekend', done: false },
+    { text: 'Pick a new movie together', done: true },
+    { text: 'Finish the photo album', done: false },
+    { text: 'Go for an evening walk', done: false }
   ];
 
   function seedMemories() {
@@ -565,14 +565,14 @@
     }
   }
 
-  /* ── demo ribbon: "Sıfırla" ─────────────────────────────────────────────── */
+  /* ── demo ribbon: "Reset" ─────────────────────────────────────────────── */
 
   function resetDemo() {
     var drop = [];
     try {
       for (var i = 0; i < window.localStorage.length; i++) {
         var k = window.localStorage.key(i);
-        if (k && (k.indexOf('demo-') === 0 || k.indexOf('ayicik-') === 0)) drop.push(k);
+        if (k && (k.indexOf('demo-') === 0 || k.indexOf('littlebear-') === 0)) drop.push(k);
       }
     } catch (e) { /* ignore */ }
     drop.forEach(lsRemove);
@@ -580,7 +580,7 @@
       var sdrop = [];
       for (var j = 0; j < window.sessionStorage.length; j++) {
         var sk = window.sessionStorage.key(j);
-        if (sk && sk.indexOf('ayicik-') === 0) sdrop.push(sk);
+        if (sk && sk.indexOf('littlebear-') === 0) sdrop.push(sk);
       }
       sdrop.forEach(function (key) { window.sessionStorage.removeItem(key); });
     } catch (e2) { /* ignore */ }

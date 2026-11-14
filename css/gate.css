@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Love-question gate overlay styling
+ * Little Bear — Love-question gate overlay styling
  * Renders inside the frozen #gate-overlay (base look — full-screen, gradient, safe-area padding —
  * comes from .overlay in css/style.css). All classes are prefixed gate- to avoid collisions.
  *
@@ -179,7 +179,7 @@
   box-sizing: border-box;
   transition: font-size .22s ease, padding .22s ease, height .22s ease,
     left .35s ease, top .35s ease, background .2s ease, transform .1s ease;
-  /* Covers Yes, the hopping No and '+ daha çok' (all carry this base class): a long press on a
+  /* Covers Yes, the hopping No and '+ more' (all carry this base class): a long press on a
      fast-moving/repeatedly-tapped target must not raise iOS's callout menu, select its text, or
      let a rapid double-tap zoom the page. */
   -webkit-touch-callout: none;

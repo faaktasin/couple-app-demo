@@ -1,7 +1,7 @@
 /**
- * Ayıcık — Clock
+ * Little Bear — Clock
  * The ONLY source of "now" for the whole app. Every feature reads time through appNow(),
- * never `new Date()` directly, so a birthday rehearsal (?onizleme=dogumgunu) can move the whole
+ * never `new Date()` directly, so a birthday rehearsal (?preview=birthday) can move the whole
  * app to her birthday without touching the real clock or any persisted flag.
  */
 
@@ -9,7 +9,7 @@ var _timeOffsetMs = 0;
 var _previewMode = null; /* computed once, lazily, on first use */
 
 /**
- * True iff the page URL asked for birthday preview mode (?onizleme=dogumgunu). Read once: the
+ * True iff the page URL asked for birthday preview mode (?preview=birthday). Read once: the
  * first call also computes the preview time offset so appNow() lands on her next birthday.
  * @returns {boolean}
  */
@@ -17,7 +17,7 @@ function isPreviewMode() {
   if (_previewMode === null) {
     try {
       var params = new URLSearchParams(window.location.search);
-      _previewMode = params.get('onizleme') === 'dogumgunu';
+      _previewMode = params.get('preview') === 'birthday';
     } catch (e) {
       _previewMode = false;
     }
@@ -84,11 +84,11 @@ function canPersistFlags() {
 
 /* Flag keys a rehearsal must not touch for real. Feature agents add their own flag keys here as
    they introduce them (e.g. the gate's "played this year" flag, the birthday "seen" flag).
-   Deliberately excludes 'ayicik-migrated' (firebase.js) and any Firestore-backed data — those are
+   Deliberately excludes 'littlebear-migrated' (firebase.js) and any Firestore-backed data — those are
    real user data, not a rehearsal flag, and must keep writing normally in preview mode too. */
 var TIME_PREVIEW_PROTECTED_KEYS = {
-  'ayicik-gate-played-year': true,
-  'ayicik-birthday-seen-year': true
+  'littlebear-gate-played-year': true,
+  'littlebear-birthday-seen-year': true
 };
 
 /**

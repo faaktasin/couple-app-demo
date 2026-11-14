@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Data & Configuration
+ * Little Bear — Data & Configuration
  * Love messages, date utilities, and app constants.
  */
 
@@ -22,38 +22,38 @@ const CONFIG = {
   mapZoom: 11,
   maxPhotoWidth: 600,
   storageKeys: {
-    memories: 'ayicik-memories',
-    todos: 'ayicik-todos'
+    memories: 'littlebear-memories',
+    todos: 'littlebear-todos'
   },
-  /* "Takip" (js/habits.js). The first month the tracker shows; every month from here to the
+  /* "Habits" (js/habits.js). The first month the tracker shows; every month from here to the
      current one exists by itself. */
   habitsStart: DEMO_FIRST_DAY_KEY.slice(0, 7),
   people: { can: 'Can', elif: 'Elif' },
   /* The list. `owners` = who ticks it, `weekdaysOnly` = due Mon-Fri only, `since` / optional
      `until` = the dates it is active (so changing the list never rewrites old months). */
   habits: [
-    { id: 'esneme', label: 'Esneme', owners: ['can', 'elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: birlikte beş dakika esneyeceğiz' },
-    { id: 'gunluk', label: 'Günlük yazma', owners: ['can', 'elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: günün bir cümlesini yazacağız' },
-    { id: 'nefes', label: 'Nefes egzersizi', owners: ['elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: sakin bir nefes molası' },
-    { id: 'bitki', label: 'Bitkileri sulama', owners: ['elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: saksılara göz at' },
-    { id: 'erken', label: 'Erken kalkma', owners: ['can'], weekdaysOnly: true, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: hafta içi erken kalk' },
-    { id: 'foto', label: 'Fotoğraf çekme', owners: ['can'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Örnek not: günde bir kare' }
+    { id: 'stretch', label: 'Stretching', owners: ['can', 'elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: five minutes of stretching together' },
+    { id: 'journal', label: 'Journaling', owners: ['can', 'elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: we write one sentence about the day' },
+    { id: 'breathe', label: 'Breathing exercise', owners: ['elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: a calm breathing break' },
+    { id: 'plants', label: 'Watering the plants', owners: ['elif'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: check on the pots' },
+    { id: 'early', label: 'Waking up early', owners: ['can'], weekdaysOnly: true, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: get up early on weekdays' },
+    { id: 'photo', label: 'Taking a photo', owners: ['can'], weekdaysOnly: false, since: DEMO_FIRST_DAY_KEY, note: 'Sample note: one frame a day' }
   ],
 };
 
 const LOVE_MESSAGES = [
-  'Bu bir örnek mesajdır.',
-  'Bugün güzel bir gün olsun.',
-  'Küçük bir gülümseme günü değiştirir.',
-  'Bir adım at, gerisi gelir.',
-  'Bugün kendine iyi davran.',
-  'Güzel şeyler yolda.',
-  'Derin bir nefes al ve devam et.',
-  'Bu mesaj örnek amaçlıdır.',
-  'Her gün yeni bir başlangıç.',
-  'Sakin ve güçlü kal.',
-  'Bugün de harika gidiyorsun.',
-  'Gerçek mesajlar giriş yapınca yüklenir.'
+  'This is a sample message.',
+  'Have a lovely day today.',
+  'A small smile can change the day.',
+  'Take one step, the rest will follow.',
+  'Be kind to yourself today.',
+  'Good things are on the way.',
+  'Take a deep breath and keep going.',
+  'This message is only a sample.',
+  'Every day is a new beginning.',
+  'Stay calm and strong.',
+  'You are doing great today too.',
+  'The real messages load after you sign in.'
 ];
 
 /**

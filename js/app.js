@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Main Application
+ * Little Bear — Main Application
  * Bottom-nav tab switching, the feature-init dispatcher, localStorage helpers (kept for
  * migration), modal/toast helpers, and PWA registration.
  * Init flow: DOMContentLoaded calls initTabs() once; firebase.js's onAppReady() calls it again
@@ -34,8 +34,8 @@ function initTabs() {
     });
   });
 
-  /* The desktop Başlat panel opens the site on #takip — start on Takip instead of Bugün. */
-  if (window.location.hash === '#takip') showTab('habits-view');
+  /* The desktop Start panel opens the site on #habits — start on Habits instead of Today. */
+  if (window.location.hash === '#habits') showTab('habits-view');
 }
 
 /**
@@ -54,9 +54,9 @@ function showTab(id) {
   var btn = document.querySelector('.nav-btn[data-tab="' + id + '"]');
   if (btn) btn.classList.add('is-active');
 
-  document.dispatchEvent(new CustomEvent('ayicik:tab', { detail: { tab: id } }));
+  document.dispatchEvent(new CustomEvent('littlebear:tab', { detail: { tab: id } }));
 
-  /* Kept working here until the Anılar agent takes ownership via the ayicik:tab event above. */
+  /* Kept working here until the Memories agent takes ownership via the littlebear:tab event above. */
   if (id === 'memories-view' && window.appMap) {
     var mapView = document.getElementById('map-view');
     if (mapView && mapView.classList.contains('is-active')) {
@@ -95,7 +95,7 @@ function initFeatures() {
   }
 }
 
-/* Default gallery/map segmented control — kept working until the Anılar agent overwrites
+/* Default gallery/map segmented control — kept working until the Memories agent overwrites
    window.initMemoriesSwitch with its own (declared earlier in script-load order than app.js, so
    this guard never clobbers a real implementation; app.js loads last). */
 if (typeof window.initMemoriesSwitch !== 'function') {
@@ -141,7 +141,7 @@ function saveData(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (e) {
-    alert('Depolama alanı dolu! Bazı fotoğrafları silmeyi dene.');
+    alert('Storage is full! Try deleting some photos.');
   }
 }
 
@@ -219,7 +219,7 @@ function showToast(message, duration) {
   var toast = document.createElement('div');
   toast.className = 'toast';
   /* m8: without this a toast is silent to VoiceOver — role=status + aria-live=polite gets
-     "Anı kaydedildi!" and the upload progress announced without stealing focus. */
+     "Memory saved!" and the upload progress announced without stealing focus. */
   toast.setAttribute('role', 'status');
   toast.setAttribute('aria-live', 'polite');
   toast.textContent = message;

@@ -1,12 +1,12 @@
 /**
- * Ayıcık — Firebase Backend
+ * Little Bear — Firebase Backend
  * Authentication, Firestore sync, and data migration.
  * All data is scoped under /users/{uid}/ for security.
  */
 
 /* ── Firebase Config ────────────────────────────────── */
 var firebaseConfig = {
-  projectId: 'ayicik-demo' /* the demo backend ignores it: js/demo-backend.js */
+  projectId: 'littlebear-demo' /* the demo backend ignores it: js/demo-backend.js */
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -69,19 +69,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     errorEl.textContent = '';
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Giriş yapılıyor...';
+    submitBtn.textContent = 'Signing in...';
 
     auth.signInWithEmailAndPassword(email, password)
       .catch(function (error) {
-        var msg = 'Giriş başarısız.';
+        var msg = 'Sign-in failed.';
         if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-          msg = 'E-posta veya şifre hatalı.';
+          msg = 'Wrong email or password.';
         } else if (error.code === 'auth/too-many-requests') {
-          msg = 'Çok fazla deneme. Biraz bekle.';
+          msg = 'Too many attempts. Please wait a bit.';
         }
         errorEl.textContent = msg;
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Giriş Yap';
+        submitBtn.textContent = 'Sign in';
       });
   });
 
@@ -159,7 +159,7 @@ function deleteTodoFromFirestore(id) {
   return userCollection('todos').doc(id).delete();
 }
 
-/* ── Firestore: Takip / habits (user-scoped) ────────── */
+/* ── Firestore: Habits / habits (user-scoped) ────────── */
 
 /* habitMonths/{YYYY-MM}: { days: { 'YYYY-MM-DD': { <itemId>: { <person>: true|false } } } }
    habitLog/{auto}: { at, atLocal, month, day, item, person, value, by } — append-only. */
@@ -248,7 +248,7 @@ function isValidPhotoUrl(str) {
 /* ── localStorage Migration ─────────────────────────── */
 
 function migrateLocalStorage() {
-  if (localStorage.getItem('ayicik-migrated')) return;
+  if (localStorage.getItem('littlebear-migrated')) return;
 
   var oldMemories = [];
   var oldTodos = [];
@@ -271,11 +271,11 @@ function migrateLocalStorage() {
   });
 
   if (oldMemories.length === 0 && oldTodos.length === 0) {
-    localStorage.setItem('ayicik-migrated', 'true');
+    localStorage.setItem('littlebear-migrated', 'true');
     return;
   }
 
-  showToast('Mevcut anılar yükleniyor...');
+  showToast('Loading existing memories...');
 
   var promises = [];
 
@@ -291,9 +291,9 @@ function migrateLocalStorage() {
   Promise.all(promises).then(function () {
     localStorage.removeItem(CONFIG.storageKeys.memories);
     localStorage.removeItem(CONFIG.storageKeys.todos);
-    localStorage.setItem('ayicik-migrated', 'true');
-    showToast('Anılar başarıyla yüklendi!');
+    localStorage.setItem('littlebear-migrated', 'true');
+    showToast('Memories uploaded successfully!');
   }).catch(function () {
-    showToast('Yükleme sırasında hata oluştu. Tekrar denenecek.');
+    showToast('An error occurred during upload. It will be retried.');
   });
 }

@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Sözler (Words) view styling
+ * Little Bear — Words (Words) view styling
  * Prefix: wz-. Reuses tokens from css/style.css (--ink, --rose-strong, --radius, ...) and the
  * shared .card component so this view reads as part of the same app, not a bolt-on.
  * z-index: the letter reader sits at 3000 — above the modal (2000), below gate/birthday (4000),

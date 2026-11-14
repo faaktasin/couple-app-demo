@@ -1,12 +1,12 @@
-# Ayıcık — demo
+# Little Bear — demo
 
-A demo of a personal couple's progressive web app. It has a daily message, a habit tracker (Takip),
+A demo of a personal couple's progressive web app. It has a daily message, a habit tracker (Habits),
 a words page, a memories section with a gallery and a map, a dates page with countdowns, and a
 birthday surprise.
 
 All people, dates, places, texts and photos are invented. Everything is stored in the browser
 (`localStorage`); there is no server and no account. The sign-in screen accepts any e-mail
-address and password. The "Sıfırla" link in the top ribbon clears the demo data.
+address and password. The "Reset" link in the top ribbon clears the demo data.
 
 ## Open it locally
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="only light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Ayıcık (demo)</title>
+  <title>Little Bear (demo)</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/heart.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="img/icon-180.png">
@@ -29,10 +29,10 @@
 
   <!-- Demo ribbon -->
   <div class="demo-ribbon" role="note">
-    <span class="demo-ribbon__text">Demo · veriler yalnız bu tarayıcıda</span>
+    <span class="demo-ribbon__text">Demo · data stays in this browser</span>
     <span class="demo-ribbon__links">
-      <a class="demo-ribbon__link" href="?onizleme=dogumgunu">Doğum günü sürprizi</a>
-      <a class="demo-ribbon__link" id="demo-reset" href="#">Sıfırla</a>
+      <a class="demo-ribbon__link" href="?preview=birthday">Birthday surprise</a>
+      <a class="demo-ribbon__link" id="demo-reset" href="#">Reset</a>
     </span>
   </div>
 
@@ -48,16 +48,16 @@
   <div id="auth-screen" class="auth-screen" style="display:none">
     <div class="auth-card">
       <div class="auth-bear" data-bear data-bear-mood="happy" data-bear-arms="wave" data-bear-heart="true" data-bear-size="112"></div>
-      <h1 class="auth-title">Ayıcık</h1>
-      <p class="auth-subtitle">Hoş geldin</p>
+      <h1 class="auth-title">Little Bear</h1>
+      <p class="auth-subtitle">Welcome</p>
       <form id="login-form" class="auth-form">
         <div class="form-group">
-          <input type="email" id="login-email" placeholder="E-posta" required>
+          <input type="email" id="login-email" placeholder="Email" required>
         </div>
         <div class="form-group">
-          <input type="password" id="login-password" placeholder="Şifre" required>
+          <input type="password" id="login-password" placeholder="Password" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Giriş Yap</button>
+        <button type="submit" class="btn btn-primary btn-full">Sign in</button>
         <p id="login-error" class="login-error"></p>
       </form>
     </div>
@@ -68,19 +68,19 @@
 
   <!-- Fixed compact header -->
   <header class="header">
-    <button id="gate-replay-btn" class="icon-btn header-side header-side--left" hidden aria-label="Soruları tekrar oyna">
+    <button id="gate-replay-btn" class="icon-btn header-side header-side--left" hidden aria-label="Replay the questions">
       <span data-bear data-bear-head-only="true" data-bear-size="30" data-bear-mood="happy"></span>
     </button>
     <div class="header-title">
-      <span class="header-title-text">Ayıcık</span>
+      <span class="header-title-text">Little Bear</span>
       <svg class="header-title-heart" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
     </div>
-    <button id="logout-btn" class="icon-btn header-side header-side--right" title="Çıkış" aria-label="Çıkış">
+    <button id="logout-btn" class="icon-btn header-side header-side--right" title="Sign out" aria-label="Sign out">
       <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
     </button>
   </header>
 
-  <!-- Bugün (Today) -->
+  <!-- Today -->
   <section id="today-view" class="view is-active">
     <div class="daily-container">
 
@@ -88,9 +88,9 @@
 
       <!-- Daily Message -->
       <div class="card message-card">
-        <p class="message-label">Bugünün Mesajı</p>
+        <p class="message-label">Today's Message</p>
         <p class="message-text" id="daily-message"></p>
-        <button class="btn-shuffle" id="shuffle-btn" title="Başka bir söz">
+        <button class="btn-shuffle" id="shuffle-btn" title="Another quote">
           <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
         </button>
       </div>
@@ -99,9 +99,9 @@
 
       <!-- To-Do List -->
       <div class="card todo-card">
-        <p class="todo-label">Birlikte Yapacaklarımız</p>
+        <p class="todo-label">Things We Will Do Together</p>
         <form class="todo-form" id="todo-form">
-          <input type="text" id="todo-input" placeholder="Yeni plan ekle..." autocomplete="off" maxlength="120">
+          <input type="text" id="todo-input" placeholder="Add a new plan..." autocomplete="off" maxlength="120">
           <button type="submit" class="btn btn-primary">+</button>
         </form>
         <div class="todo-list" id="todo-list"></div>
@@ -110,7 +110,7 @@
     </div>
   </section>
 
-  <!-- Takip (habit tracker) -->
+  <!-- Habits (habit tracker) -->
   <section id="habits-view" class="view">
     <div id="habits-root" class="hb-wrap">
       <div id="hb-top"></div>
@@ -123,32 +123,32 @@
     </div>
   </section>
 
-  <!-- Sözler (Words) -->
+  <!-- Words -->
   <section id="words-view" class="view">
     <div id="words-root"></div>
   </section>
 
-  <!-- Anılar (Memories: gallery + map) -->
+  <!-- Memories: gallery + map -->
   <section id="memories-view" class="view">
 
-    <div id="memories-switch" class="seg-control" role="tablist" aria-label="Anı görünümü">
-      <button type="button" class="seg-btn is-active" data-seg="gallery">Galeri</button>
-      <button type="button" class="seg-btn" data-seg="map">Harita</button>
+    <div id="memories-switch" class="seg-control" role="tablist" aria-label="Memory view">
+      <button type="button" class="seg-btn is-active" data-seg="gallery">Gallery</button>
+      <button type="button" class="seg-btn" data-seg="map">Map</button>
     </div>
 
     <div id="gallery-view" class="subview is-active">
       <div class="daily-container">
         <div class="card">
           <div class="gallery-header">
-            <p class="gallery-label">Anılarımız</p>
-            <button id="gallery-upload-btn" class="btn btn-primary btn-sm">+ Yükle</button>
+            <p class="gallery-label">Our Memories</p>
+            <button id="gallery-upload-btn" class="btn btn-primary btn-sm">+ Upload</button>
           </div>
           <input type="file" id="gallery-file-input" accept="image/*" multiple hidden>
           <div class="gallery-section">
             <div class="gallery-grid" id="gallery-grid"></div>
           </div>
           <div class="gallery-section" id="gallery-nomap-section" style="display:none">
-            <p class="gallery-sublabel">Konumsuz Anılar</p>
+            <p class="gallery-sublabel">Memories Without a Place</p>
             <div class="gallery-grid" id="gallery-grid-nomap"></div>
           </div>
         </div>
@@ -157,33 +157,33 @@
 
     <div id="map-view" class="subview">
       <div id="map"></div>
-      <button class="map-hint" id="map-hint">Haritaya dokun, anı ekle</button>
+      <button class="map-hint" id="map-hint">Tap the map to add a memory</button>
     </div>
 
   </section>
 
-  <!-- Tarihler (Dates) -->
+  <!-- Dates -->
   <section id="dates-view" class="view">
     <div class="dates-container">
 
       <div class="dates-col dates-col-birthdays">
         <div class="card countdown-card">
-          <p class="countdown-label">Elif'in Doğum Gününe Kalan</p>
+          <p class="countdown-label">Until Elif's Birthday</p>
           <div class="countdown" id="countdown-her-bday"></div>
         </div>
         <div class="card countdown-card">
-          <p class="countdown-label">Can'ın Doğum Gününe Kalan</p>
+          <p class="countdown-label">Until Can's Birthday</p>
           <div class="countdown" id="countdown-his-bday"></div>
         </div>
       </div>
 
       <div class="dates-col dates-col-counters">
         <div class="card countdown-card">
-          <p class="countdown-label">İlk Buluşmamızdan Beri</p>
+          <p class="countdown-label">Since We First Met</p>
           <div class="countdown" id="countdown-meet"></div>
         </div>
         <div class="card countdown-card">
-          <p class="countdown-label">Sevgimizi Söylediğimizden Beri</p>
+          <p class="countdown-label">Since We Said I Love You</p>
           <div class="countdown" id="countdown-love"></div>
         </div>
       </div>
@@ -191,60 +191,60 @@
     </div>
   </section>
 
-  <!-- Sürpriz (Birthday) -->
+  <!-- Surprise (Birthday) -->
   <section id="birthday-view" class="view">
     <div id="birthday-root"></div>
   </section>
 
   <!-- Add Memory Modal -->
-  <div class="modal-overlay" id="memory-modal" role="dialog" aria-modal="true" aria-label="Yeni Anı">
+  <div class="modal-overlay" id="memory-modal" role="dialog" aria-modal="true" aria-label="New Memory">
     <div class="modal">
       <div class="modal-header">
-        <h2>Yeni Anı</h2>
-        <button class="modal-close" data-close-modal="memory-modal" aria-label="Kapat">&times;</button>
+        <h2>New Memory</h2>
+        <button class="modal-close" data-close-modal="memory-modal" aria-label="Close">&times;</button>
       </div>
       <form id="memory-form">
         <input type="hidden" id="memory-lat">
         <input type="hidden" id="memory-lng">
         <div class="form-group">
-          <label for="memory-title">Başlık</label>
-          <input type="text" id="memory-title" required placeholder="Bu anının adı..." maxlength="80">
+          <label for="memory-title">Title</label>
+          <input type="text" id="memory-title" required placeholder="Name this memory..." maxlength="80">
         </div>
         <div class="form-group">
-          <label for="memory-date">Tarih</label>
+          <label for="memory-date">Date</label>
           <input type="date" id="memory-date">
         </div>
         <div class="form-group">
-          <label for="memory-note">Not</label>
-          <textarea id="memory-note" rows="3" placeholder="Bu anı hakkında birkaç satır..."></textarea>
+          <label for="memory-note">Note</label>
+          <textarea id="memory-note" rows="3" placeholder="A few lines about this memory..."></textarea>
         </div>
         <div class="form-group">
-          <label for="memory-photo">Fotoğraf</label>
+          <label for="memory-photo">Photo</label>
           <input type="file" id="memory-photo" accept="image/*">
-          <img id="photo-preview" class="photo-preview" alt="Önizleme">
+          <img id="photo-preview" class="photo-preview" alt="Preview">
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Kaydet</button>
+        <button type="submit" class="btn btn-primary btn-full">Save</button>
       </form>
     </div>
   </div>
 
   <!-- Memory Detail Modal -->
-  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-label="Anı">
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-label="Memory">
     <div class="modal">
       <div class="modal-header">
-        <h2>Anı</h2>
-        <button class="modal-close" data-close-modal="detail-modal" aria-label="Kapat">&times;</button>
+        <h2>Memory</h2>
+        <button class="modal-close" data-close-modal="detail-modal" aria-label="Close">&times;</button>
       </div>
       <div id="detail-content"></div>
     </div>
   </div>
 
-  <!-- Takip day sheet (opened with openModal from js/habits.js) -->
+  <!-- Habits day sheet (opened with openModal from js/habits.js) -->
   <div class="modal-overlay" id="habits-day-modal" role="dialog" aria-modal="true" aria-labelledby="habits-day-title">
     <div class="modal">
       <div class="modal-header">
         <h2 id="habits-day-title"></h2>
-        <button class="modal-close" data-close-modal="habits-day-modal" aria-label="Kapat">&times;</button>
+        <button class="modal-close" data-close-modal="habits-day-modal" aria-label="Close">&times;</button>
       </div>
       <div id="habits-day-content"></div>
     </div>
@@ -257,27 +257,27 @@
   <nav class="bottom-nav">
     <button class="nav-btn is-active" data-tab="today-view">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      <span>Bugün</span>
+      <span>Today</span>
     </button>
     <button class="nav-btn" data-tab="habits-view">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/><path class="nav-check" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7 5.2-5.6"/></svg>
-      <span>Takip</span>
+      <span>Habits</span>
     </button>
     <button class="nav-btn" data-tab="words-view">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-      <span>Sözler</span>
+      <span>Words</span>
     </button>
     <button class="nav-btn" data-tab="memories-view">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>
-      <span>Anılar</span>
+      <span>Memories</span>
     </button>
     <button class="nav-btn" data-tab="dates-view">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
-      <span>Tarihler</span>
+      <span>Dates</span>
     </button>
     <button class="nav-btn nav-btn--gift" data-tab="birthday-view">
       <span class="nav-gift-bubble" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM15 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></span>
-      <span>Sürpriz</span>
+      <span>Surprise</span>
     </button>
   </nav>
 

@@ -1,5 +1,5 @@
 /**
- * Ayıcık — Anılar (Memories: gallery + map) view styling.
+ * Little Bear — Memories (Memories: gallery + map) view styling.
  * Owned by the Memories feature package: the segmented switch, the map's own controls, the
  * polaroid gallery + its empty state, and the memory detail modal. Every class this file
  * introduces is prefixed `anilar-`; the other selectors below are the shared foundation's own
@@ -190,7 +190,7 @@
   max-width: 260px;
 }
 
-/* "Konumsuz Anılar" — a soft centred divider instead of the plain left-aligned rule, to match the
+/* "Memories Without a Place" — a soft centred divider instead of the plain left-aligned rule, to match the
    scrapbook feel of the polaroids above it. */
 .gallery-sublabel {
   border-top: none;
